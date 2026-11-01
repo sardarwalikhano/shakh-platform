@@ -62,6 +62,20 @@ Role authorization reads trusted `app_metadata.role`, never browser-editable `us
 - Enable RLS on every exposed table and explicitly grant Data API access as required.
 - No mock, demo, seed, or test files/data are added to the production app structure.
 
+## Transactional business email
+
+Resend is configured as the outbound email provider for order confirmations, merchant notifications, captain delivery assignments, and platform operations.
+
+- Use only the dedicated sending-only API key scoped to the verified `mail.daim-post.online` domain.
+- Keep `RESEND_API_KEY` server-side and encrypted in Vercel; never expose it through `NEXT_PUBLIC_*` or source control.
+- Sender identity is configured by `RESEND_FROM_EMAIL`; optionally set `RESEND_REPLY_TO`.
+- Email templates are Kurdish Sorani-first and RTL.
+- Sending helpers are server-side modules and must only be called after the application's order/role authorization has succeeded.
+- Use one stable idempotency key per logical notification, e.g. `order-confirmation/<order-id>`, to prevent duplicates during retries.
+- This integration handles application business notifications. Supabase Auth SMTP/email templates remain a separate configuration step.
+
+See [docs/resend-email.md](docs/resend-email.md).
+
 ## Deployment
 
 The Vercel project is linked to this repository and configured for Next.js with Node.js 22.x. Check the current build status in Vercel before treating the site as live.
