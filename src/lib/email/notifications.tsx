@@ -1,5 +1,6 @@
 import { TransactionalEmail } from "@/emails/transactional-email";
 import { sendTransactionalEmail } from "@/lib/email/resend";
+import { getSiteUrl } from "@/lib/site-url";
 
 export type OrderEmailBase = {
   recipient: string;
@@ -24,12 +25,7 @@ export type CaptainAssignmentEmailInput = OrderEmailBase & {
 };
 
 function getAppUrl(path: string): string {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL;
-  if (!baseUrl) {
-    throw new Error("NEXT_PUBLIC_SITE_URL is required for email action links.");
-  }
-
-  const url = new URL(path, baseUrl);
+  const url = new URL(path, getSiteUrl());
   if (url.protocol !== "https:" && url.hostname !== "localhost") {
     throw new Error("Email action links must use HTTPS.");
   }
