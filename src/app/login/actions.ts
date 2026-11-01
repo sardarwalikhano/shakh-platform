@@ -39,7 +39,13 @@ export async function signIn(formData: FormData) {
   }
 
   const { data } = await supabase.auth.getClaims();
-  const role = getRoleFromClaims(data?.claims);
+  let role = getRoleFromClaims(data?.claims);
+  // Fresh user metadata is a trusted server-side fallback if a newly assigned role
+  // has not appeared in the just-issued JWT claims yet.
+  if (!role) {
+    const { data: userData } = await supabase.auth.getUser();
+    role = getRoleFromClaims({ app_metadata: userData.user?.app_metadata });
+  }
   if (role) redirect(ROLE_HOME[role]);
   redirect("/access-pending");
 }

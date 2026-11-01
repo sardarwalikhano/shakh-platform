@@ -28,8 +28,14 @@ export async function updateSession(request: NextRequest) {
     url.pathname = "/login";
     url.search = "";
     url.searchParams.set("next", request.nextUrl.pathname);
-    return NextResponse.redirect(url);
+    const redirectResponse = NextResponse.redirect(url);
+    // Preserve refreshed/cleared Supabase cookies when auth expires on a protected route.
+    response.cookies.getAll().forEach((cookie) => redirectResponse.cookies.set(cookie));
+    redirectResponse.headers.set("Cache-Control", "private, no-store, max-age=0");
+    return redirectResponse;
   }
 
+  // Workspace pages are account-specific; prevent browser/proxy caching of stale auth UI.
+  response.headers.set("Cache-Control", "private, no-store, max-age=0");
   return response;
 }
