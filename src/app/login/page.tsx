@@ -9,7 +9,7 @@ const ERRORS: Record<string, string> = {
   invalid_email: "ناونیشانی ئیمەیڵ دروست نییە.",
   invalid_credentials: "ئیمەیڵ یان وشەی نهێنی دروست نییە.",
   email_not_confirmed: "پێش چوونەژوورەوە، ئیمەیڵەکەت پشتڕاست بکەرەوە.",
-  invalid_signup: "ناو و ئیمەیڵ پێویستن؛ وشەی نهێنی دەبێت لانیکەم ١٢ پیت بێت.",
+  invalid_signup: "ناو و ئیمەیڵ پێویستن؛ وشەی نهێنی دەبێت ١٢–١٢٨ پیت بێت و دووبارەکردنەوەکەی یەکسان بێت.",
   signup_failed: "تۆمارکردن ئێستا سەرکەوتوو نەبوو. تکایە دواتر هەوڵبدەرەوە.",
   confirmation_failed: "بەستەری پشتڕاستکردنەوە دروست نییە یان بەسەرچووە.",
 };
@@ -35,9 +35,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         </Link>
         <div className="auth-grid">
           <section className="auth-aside">
-            <span className="auth-aside-kicker">SHAKH ACCOUNT</span>
+            <span className="auth-aside-kicker">SHAKH ACCOUNT · SECURE ACCESS</span>
             <h1>بەخێربێیت بۆ شوێنی کار و بازاڕەکەت.</h1>
-            <p>بە هەژمارەکەت بچۆرە ژوورەوە بۆ بەڕێوەبردنی داواکاری، فرۆشگا، گەیاندن و خزمەتگوزارییەکان.</p>
+            <p>بە هەژمارەکەت بچۆرە ژوورەوە بۆ بەڕێوەبردنی داواکاری، فرۆشگا، گەیاندن و خزمەتگوزارییەکان. هەژماری نوێ بە ڕۆڵی کڕیار دەست پێ دەکات؛ دەسەڵاتە تایبەتەکان تەنها لەلایەن بەڕێوەبەری گشتییەوە دەدرێن.</p>
             <div className="auth-aside-mark">ش</div>
             <span className="auth-aside-foot">لە یەک شوێن، بۆ هەمووان.</span>
           </section>
@@ -79,6 +79,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               <input id="signup_email" name="signup_email" type="email" autoComplete="email" maxLength={254} required disabled={!configured} placeholder="name@example.com" />
               <label htmlFor="signup_password">وشەی نهێنی</label>
               <input id="signup_password" name="signup_password" type="password" autoComplete="new-password" minLength={12} maxLength={128} required disabled={!configured} placeholder="لانیکەم ١٢ پیت" />
+              <label htmlFor="signup_password_confirmation">دووبارە وشەی نهێنی بنووسە</label>
+              <input id="signup_password_confirmation" name="signup_password_confirmation" type="password" autoComplete="new-password" minLength={12} maxLength={128} required disabled={!configured} placeholder="هەمان وشەی نهێنی" />
               <small className="auth-field-hint">وشەی نهێنییەکی درێژ و تایبەت بە SHAKH بەکاربهێنە.</small>
               <button className="button button--quiet auth-submit" type="submit" disabled={!configured}>دروستکردنی هەژمار</button>
             </form>

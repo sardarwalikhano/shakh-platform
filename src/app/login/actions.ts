@@ -49,12 +49,14 @@ export async function signUp(formData: FormData) {
   const fullName = textField(formData, "full_name");
   const email = normalizedEmail(formData, "signup_email");
   const password = passwordField(formData, "signup_password");
+  const confirmation = passwordField(formData, "signup_password_confirmation");
   if (
     fullName.length < 2 ||
     fullName.length > 160 ||
     !validEmail(email) ||
     Array.from(password).length < MIN_PASSWORD_LENGTH ||
-    Array.from(password).length > MAX_PASSWORD_LENGTH
+    Array.from(password).length > MAX_PASSWORD_LENGTH ||
+    password !== confirmation
   ) redirect("/login?error=invalid_signup");
 
   const supabase = await createClient();

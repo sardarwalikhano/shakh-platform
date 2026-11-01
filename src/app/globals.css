@@ -1733,3 +1733,13 @@ a {
 .m03-store-moderation-form .m03-field input{min-height:39px}
 .m03-store-moderation-form button{min-height:39px;white-space:nowrap}
 @media(max-width:760px){.m03-store-moderation-row{align-items:stretch;flex-direction:column}.m03-store-moderation-controls{justify-items:stretch;min-width:0}.m03-store-moderation-controls>.m03-status{justify-self:start}.m03-store-moderation-form{grid-template-columns:1fr}.m03-store-moderation-form button{width:100%}}
+
+/* Final authentication UI refresh — responsive, accessible, RTL-first. */
+.auth-page{padding:clamp(18px,4vw,48px) 16px 56px;background:radial-gradient(ellipse at 8% 88%,rgba(22,163,74,.10),transparent 34%),radial-gradient(ellipse at 90% 6%,rgba(20,83,45,.08),transparent 28%),#f5f8f6}
+.auth-wrap{width:min(100%,1120px)}.auth-brand{margin-bottom:20px}.auth-grid{grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);border-color:#dce7df;border-radius:28px;box-shadow:0 28px 90px rgba(15,45,28,.10)}
+.auth-aside{min-height:690px;padding:clamp(30px,4.4vw,58px);background:linear-gradient(150deg,#0b3822 0%,#14532d 58%,#176536 100%)}.auth-aside h1{font-size:clamp(30px,3.5vw,44px);line-height:1.6;letter-spacing:-.025em}.auth-aside p{font-size:13px;line-height:2.2}
+.auth-panel{padding:clamp(26px,4vw,54px)}.auth-panel-heading{margin-bottom:6px}.auth-panel-heading h2{font-size:clamp(26px,2.6vw,32px);line-height:1.5}.auth-panel-heading p{font-size:12px;line-height:1.9}
+.auth-form{gap:10px;margin-top:22px}.auth-form label{margin-top:8px;font-size:12px}.auth-form input{min-height:50px;border-color:#d5e2d9;border-radius:13px;background:#f8fbf9;font-size:13px}.auth-form input:focus-visible,.auth-resend-form input:focus-visible{outline:3px solid rgba(22,163,74,.20);outline-offset:1px}.auth-submit{min-height:54px;border-radius:14px;font-size:13px}.auth-form .button--quiet{min-height:50px;border-radius:13px}.auth-divider{margin-top:24px;font-size:11px}.auth-alert{font-size:12px;border-radius:13px}.auth-resend-panel{border-radius:16px;padding:17px}.auth-field-hint{color:#64748b;font-size:11px;line-height:1.8}.auth-back{font-size:12px}
+@media(max-width:820px){.auth-grid{grid-template-columns:1fr}.auth-aside{min-height:auto;padding:27px 26px 30px}.auth-aside h1{margin:18px 0 10px;font-size:clamp(25px,6vw,34px)}.auth-aside-mark,.auth-aside-foot{display:none}.auth-panel{padding:28px 24px 30px}}
+@media(max-width:420px){.auth-page{padding:14px 10px 30px}.auth-grid{border-radius:20px}.auth-aside{padding:22px 20px}.auth-panel{padding:23px 18px}.auth-form input{min-height:48px}}
+@media(prefers-reduced-motion:reduce){.auth-form input,.auth-submit{transition:none}}
