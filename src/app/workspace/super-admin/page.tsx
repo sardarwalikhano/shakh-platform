@@ -1,13 +1,9 @@
+import { EmptyState, WorkspacePageHeader } from "@/components/workspace/shared";
 export default function SuperAdminPage() {
   return (
     <section className="workspace-page">
-      <span className="section-kicker">SUPER ADMIN</span>
-      <h1>بەڕێوەبردنی گشتی SHAKH</h1>
-      <p>چاودێری پلاتفۆرم، ڕۆڵەکان و هەموو بەشەکانی بازاڕ.</p>
-      <div className="workspace-empty">
-        <strong>بنەمای داشبۆرد ئامادەیە</strong>
-        <span>بەشەکانی بەڕێوەبردن و ئامار دوای پەیوەندی داتابەیس زیاد دەکرێن.</span>
-      </div>
+      <WorkspacePageHeader eyebrow="SUPER ADMIN" title="بەڕێوەبردنی گشتی SHAKH" description="چاودێری پلاتفۆرم، ڕۆڵەکان و هەموو بەشەکانی بازاڕ." />
+      <EmptyState icon="▦" title="بنەمای داشبۆرد ئامادەیە" description="بەشەکانی بەڕێوەبردن و ئامار دوای دانانی خزمەتگوزارییە ڕاستەقینەکان زیاد دەکرێن." />
     </section>
   );
 }

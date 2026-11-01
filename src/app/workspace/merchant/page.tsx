@@ -1,13 +1,9 @@
+import { EmptyState, WorkspacePageHeader } from "@/components/workspace/shared";
 export default function MerchantPage() {
   return (
     <section className="workspace-page">
-      <span className="section-kicker">MERCHANT WORKSPACE</span>
-      <h1>بەڕێوەبردنی فرۆشگا</h1>
-      <p>فرۆشیار تەنها بە فرۆشگا و جۆری بەشی خۆی دەگات.</p>
-      <div className="workspace-empty">
-        <strong>بەشی فرۆشیار ئامادەیە بۆ پەرەپێدان</strong>
-        <span>کۆگا، بەرهەم، نرخ، داواکاری و کۆمسیۆن دوای پەیوەندی داتابەیس چالاک دەکرێن.</span>
-      </div>
+      <WorkspacePageHeader eyebrow="MERCHANT WORKSPACE" title="بەڕێوەبردنی فرۆشگا" description="فرۆشیار تەنها بە فرۆشگا و جۆری بەشی خۆی دەگات." />
+      <EmptyState icon="▤" title="بەشی فرۆشیار ئامادەیە بۆ پەرەپێدان" description="کۆگا، بەرهەم، نرخ، داواکاری و کۆمسیۆن دوای پەیوەستکردنی خزمەتگوزارییە ڕاستەقینەکان چالاک دەکرێن." />
     </section>
   );
 }

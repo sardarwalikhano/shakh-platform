@@ -1,13 +1,9 @@
+import { EmptyState, WorkspacePageHeader } from "@/components/workspace/shared";
 export default function CustomerPage() {
   return (
     <section className="workspace-page">
-      <span className="section-kicker">CUSTOMER SPACE</span>
-      <h1>هەژماری کڕیار</h1>
-      <p>داواکارییەکان، ناونیشانەکان، جزدان و پاداشتەکان لێرە بەڕێوەدەبرێن.</p>
-      <div className="workspace-empty">
-        <strong>هێشتا داواکارییەک نییە</strong>
-        <span>بەشی کڕیار دوای زیادکردنی داتای ڕاستەقینە و خزمەتگوزارییەکان چالاک دەبێت.</span>
-      </div>
+      <WorkspacePageHeader eyebrow="CUSTOMER SPACE" title="هەژماری کڕیار" description="داواکارییەکان، ناونیشانەکان، جزدان و پاداشتەکان لێرە بەڕێوەدەبرێن." />
+      <EmptyState icon="⌂" title="هێشتا داواکارییەک نییە" description="کاتێک بەشی کڕیار و خزمەتگوزارییەکانی داواکاری چالاک بن، ئەم شوێنە زانیارییە ڕاستەقینەکان نیشان دەدات." />
     </section>
   );
 }

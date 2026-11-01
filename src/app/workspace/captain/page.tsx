@@ -1,13 +1,9 @@
+import { EmptyState, WorkspacePageHeader } from "@/components/workspace/shared";
 export default function CaptainPage() {
   return (
     <section className="workspace-page">
-      <span className="section-kicker">CAPTAIN WORKSPACE</span>
-      <h1>داشبۆردی کاپتن</h1>
-      <p>ئەرکەکانی گەیاندن، شوێن، داهات و ڕێڕەوی داواکارییەکان.</p>
-      <div className="workspace-empty">
-        <strong>هیچ گەیاندنێک لە ئێستادا نییە</strong>
-        <span>سیستەمی ئەرک و دابەشکردنی داهات دوای بەستنەوەی Supabase زیاد دەکرێت.</span>
-      </div>
+      <WorkspacePageHeader eyebrow="CAPTAIN WORKSPACE" title="داشبۆردی کاپتن" description="ئەرکەکانی گەیاندن، شوێن، داهات و ڕێڕەوی داواکارییەکان." />
+      <EmptyState icon="↗" title="هیچ گەیاندنێک لە ئێستادا نییە" description="ئەرکەکانی گەیاندن دوای دامەزراندنی سیستەمی دابەشکردن و داتای ڕاستەقینە پیشان دەدرێن." />
     </section>
   );
 }

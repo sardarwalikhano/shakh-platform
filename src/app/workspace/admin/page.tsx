@@ -1,13 +1,9 @@
+import { EmptyState, WorkspacePageHeader } from "@/components/workspace/shared";
 export default function AdminPage() {
   return (
     <section className="workspace-page">
-      <span className="section-kicker">ADMIN</span>
-      <h1>داشبۆردی بەڕێوەبەر</h1>
-      <p>ئەرک و دەسەڵاتەکان بە پێی سنووری دیاریکراوی ئەم بەڕێوەبەرە دەستنیشان دەکرێن.</p>
-      <div className="workspace-empty">
-        <strong>هیچ داتایەک پیشان نادرێت</strong>
-        <span>داتای بەڕێوەبردن دوای دانانی schema و RLS ـی Supabase زیاد دەکرێت.</span>
-      </div>
+      <WorkspacePageHeader eyebrow="ADMIN" title="داشبۆردی بەڕێوەبەر" description="ئەرک و دەسەڵاتەکان بە پێی سنووری دیاریکراوی ئەم بەڕێوەبەرە دەستنیشان دەکرێن." />
+      <EmptyState icon="▤" title="داتای بەڕێوەبردن ئامادە نییە" description="پانێڵەکانی چاودێری دوای پەیوەستکردنی داتای ڕاستەقینە و RLS ـی Supabase چالاک دەبن." />
     </section>
   );
 }

@@ -15,7 +15,7 @@
 |---|---|---|---|
 | M00 | Platform foundation and PWA | Verified custom domain, production/preview URL handling, installable manifest, icons, service worker, offline shell | Production build ready; domain resolves; manifest and icons valid; SW registered; no sensitive data cached |
 | M01 | Identity and account profile | Sign-up, sign-in, email confirmation/resend, password recovery/reset/change, session revocation, profile completion, account security | Auth URL/provider/templates/SMTP configured; end-to-end Auth tests pass on production and preview; owner-only profile RLS verified; role claims cannot be changed by browser |
-| M02 | Shared application shell | Responsive RTL navigation, role-aware menu, loading/error/empty states, common design tokens | Keyboard, mobile, RTL and role-navigation checks pass |
+| M02 | Shared application shell | Desktop sidebar, mobile bottom navigation, role-aware menus, shared page headers, loading/error/empty states, accessible focus and RTL design tokens | Production build passes; role route guards remain enforced; active navigation, mobile safe-area, keyboard focus and page states are checked |
 | M03 | Merchant onboarding and stores | Merchant applications, category assignment, store profile, approval/suspension lifecycle | Merchant can access only its own store and allowed category |
 | M04 | Catalog and inventory | Categories, product CRUD, media upload, variants, stock, availability and pricing | RLS and storage policies prevent cross-store access; stock updates are consistent |
 | M05 | Customer storefront | Store discovery, search, category filters, product details, favorites and addresses | Public catalog shows only active stores and published/available products |
@@ -38,6 +38,7 @@
 - Auth: M01 application code includes SSR cookie sessions, email/password sign-in/sign-up, confirmation/resend, recovery/reset, reauthenticated password change and explicit session revocation. Supabase dashboard provider, URL, templates, SMTP and end-to-end verification remain release checks.
 - Profile: own-profile display and update flow exists for full name, phone and preferred locale. Email and trusted role are read-only in the profile screen.
 - Business email: Resend server helpers and Sorani templates exist; they still need to be connected to committed order/delivery events.
+- Workspace UI: shared RTL shell, role-aware desktop/mobile navigation and common page states are implemented; future business destinations stay hidden until their routes exist.
 - PWA: v1 shell, manifest, install prompt and conservative offline fallback are implemented. Push notifications and offline transactions are intentionally deferred.
 
 ## Release rule
