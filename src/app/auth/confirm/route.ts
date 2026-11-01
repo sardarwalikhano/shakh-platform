@@ -2,32 +2,37 @@ import type { EmailOtpType } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getSupabasePublicEnv } from "@/lib/supabase/env";
+import { getRoleFromClaims, ROLE_HOME } from "@/lib/auth/roles";
 
 const EMAIL_OTP_TYPES = new Set<EmailOtpType>([
   "signup", "invite", "magiclink", "recovery", "email_change", "email",
 ]);
 
 export async function GET(request: NextRequest) {
-  if (!getSupabasePublicEnv()) {
-    return NextResponse.redirect(new URL("/setup-required", request.url));
-  }
+  if (!getSupabasePublicEnv()) return NextResponse.redirect(new URL("/setup-required", request.url));
 
+  const code = request.nextUrl.searchParams.get("code");
   const tokenHash = request.nextUrl.searchParams.get("token_hash");
   const rawType = request.nextUrl.searchParams.get("type");
-
-  if (!tokenHash || !rawType || !EMAIL_OTP_TYPES.has(rawType as EmailOtpType)) {
-    return NextResponse.redirect(new URL("/login?error=confirmation_failed", request.url));
-  }
-
   const supabase = await createClient();
-  const { error } = await supabase.auth.verifyOtp({
-    token_hash: tokenHash,
-    type: rawType as EmailOtpType,
-  });
+  let confirmationError: string | null = null;
 
-  if (error) {
-    return NextResponse.redirect(new URL("/login?error=confirmation_failed", request.url));
+  // PKCE is the default for @supabase/ssr. Keep token_hash support for custom email templates.
+  if (code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    confirmationError = error?.message ?? null;
+  } else if (tokenHash && rawType && EMAIL_OTP_TYPES.has(rawType as EmailOtpType)) {
+    const { error } = await supabase.auth.verifyOtp({ token_hash: tokenHash, type: rawType as EmailOtpType });
+    confirmationError = error?.message ?? null;
+  } else {
+    confirmationError = "Missing or invalid confirmation parameters.";
   }
 
-  return NextResponse.redirect(new URL("/workspace", request.url));
+  if (confirmationError) return NextResponse.redirect(new URL("/login?error=confirmation_failed", request.url));
+  if (rawType === "recovery") return NextResponse.redirect(new URL("/reset-password", request.url));
+
+  const { data } = await supabase.auth.getClaims();
+  const role = getRoleFromClaims(data?.claims);
+  if (role) return NextResponse.redirect(new URL(ROLE_HOME[role], request.url));
+  return NextResponse.redirect(new URL("/access-pending", request.url));
 }

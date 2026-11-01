@@ -13,10 +13,9 @@ export default async function WorkspaceLayout({ children }: Readonly<{ children:
           <span className="brand-copy"><strong>SHAKH</strong><small>ناوەندی بەڕێوەبردن</small></span>
         </Link>
         <div className="workspace-user">
-          <span>{user.email ?? user.id}</span>
-          <Link className="workspace-profile-link" href="/workspace/profile" aria-current="page">
-            پرۆفایلی من
-          </Link>
+          <span className="workspace-user-email">{user.email ?? user.id}</span>
+          <Link className="workspace-profile-link" href="/workspace/profile">پرۆفایل</Link>
+          <Link className="workspace-profile-link workspace-security-link" href="/workspace/security">ئاسایش</Link>
           <form action="/auth/signout" method="post">
             <button className="workspace-signout" type="submit">چوونەدەرەوە</button>
           </form>
