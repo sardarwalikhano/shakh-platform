@@ -6,69 +6,64 @@ A Kurdish-first, RTL multi-vendor commerce and delivery platform for restaurants
 
 This repository starts clean and contains only the SHAKH platform foundation. It does not import code, assets, configuration, or database objects from the previous `shakh_delivery` project.
 
-- Next.js App Router and React
-- TypeScript with strict checking
+- Next.js App Router and React with strict TypeScript
 - Tailwind CSS v4
-- Kurdish Sorani-first RTL interface
+- Kurdish Sorani-first RTL storefront
 - SHAKH visual palette: forest green, emerald, amber, white, slate, and red
-- Frontend-first delivery: no database client or authentication flow is activated until access to the designated Supabase project is verified
+- Supabase SSR client utilities, email/password sign-in, sign-up, email confirmation, and sign-out
+- Role-protected workspace routes for all platform roles
+- Database and Auth dashboard configuration remain pending until access to the designated Supabase project is authorized
 
 ## Local development
 
-Requirements: Node.js 20.9 or newer.
+Requirements: Node.js 22.x.
 
 ```bash
 npm install
+cp .env.example .env.local
 npm run dev
 ```
 
-Then open http://localhost:3000.
-
-Before connecting deployment, run:
-
-```bash
-npm run lint
-npm run typecheck
-npm run build
-```
+Set `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local` from the Supabase project's Connect dialog before testing authentication. Do not put secret keys in browser-visible variables.
 
 ## Product roles
 
-- Super Admin
-- Admin
-- Restaurant
-- Supermarket
-- Fruits & Vegetables
-- Meat & Seafood
-- Captain
-- Customer
+- `super_admin` — Super Admin
+- `admin` — Admin
+- `restaurant` — Restaurant
+- `supermarket` — Supermarket
+- `produce_vendor` — Fruits & Vegetables
+- `meat_seafood_vendor` — Meat & Seafood
+- `captain` — Captain
+- `customer` — Customer
 
-A merchant account is restricted to its assigned store and category. Super Admin has cross-category publishing rights. Platform-owned listings are attributed to **SHAKH STORE**.
+Merchant accounts are limited to their own store and assigned category. Super Admin can publish across categories as **SHAKH STORE**. Sign-up never accepts a role from the browser; role assignment must be made through trusted server-side administration.
 
 ## Financial invariants
 
-- All monetary values are stored as integer IQD units, never floating-point currency.
+- All money values are integer IQD, never floating-point currency.
 - Wallet movements use an auditable ledger.
 - Completed ledger entries are immutable; corrections are represented by compensating entries.
 - Wallet and order settlement operations must be atomic and idempotent.
-- Delivery commission allocation is 80% to the captain and 20% to the platform unless an explicitly versioned business rule changes it.
-- Prepaid wallet funding, posting commissions, refunds, and settlement movements must be represented as ledger transactions rather than editable balance fields.
+- Delivery commission allocation is 80% to the captain and 20% to the platform unless a versioned business rule changes it.
+- Posting charges, prepaid wallet funding, refunds, and settlements must be ledger transactions, not editable balance fields.
 
-## Security and data integration
+## Security and integration
 
-Supabase Auth, PostgreSQL, Storage, Realtime, and Row Level Security will be integrated only after the supplied project is accessible to the connected account. No secrets belong in source control. Browser configuration may contain only the project URL and publishable key; secret/service-role credentials remain server-side.
+Supabase Auth uses cookie-based SSR sessions. Next.js 16 `src/proxy.ts` refreshes tokens using `supabase.auth.getClaims()`; protected workspace layouts independently verify the user role. Proxy redirects are not the sole authorization boundary.
 
-Every exposed table must have RLS enabled and policies must enforce role, ownership, store, and category boundaries. User-editable profile metadata must not be used for authorization.
+Role authorization reads trusted `app_metadata.role`, never browser-editable `user_metadata`. PostgreSQL RLS must additionally enforce owner, store, role, and category boundaries. Public clients use only the project URL and publishable key. Secret API keys remain server-side.
 
 ## Database change policy
 
 - Keep schema changes in versioned Supabase migrations.
-- Generate migration files using the Supabase CLI workflow once project access is available.
-- Never edit an already-applied migration. Add a new migration for every subsequent schema change.
-- Do not add mock, demo, seed, or test data/files to production application structure.
+- Generate migration files with the Supabase CLI once project access is available.
+- Never edit an already-applied migration; add a new migration for each later schema change.
+- Enable RLS on every exposed table and explicitly grant Data API access as required.
+- No mock, demo, seed, or test files/data are added to the production app structure.
 
 ## Deployment
 
-The intended deployment target is Vercel, connected to this GitHub repository. The Vercel GitHub integration must be authorized before the project can be linked and deployed.
+The Vercel project is linked to this repository and configured for Next.js with Node.js 22.x. Check the current build status in Vercel before treating the site as live.
 
-See [docs/architecture.md](docs/architecture.md) for the initial domain boundaries and delivery sequence.
+See [docs/architecture.md](docs/architecture.md) and [docs/auth-and-access.md](docs/auth-and-access.md).
