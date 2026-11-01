@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getSupabasePublicEnv } from "@/lib/supabase/env";
 import { getRoleFromClaims, ROLE_HOME } from "@/lib/auth/roles";
+import { getSiteUrl } from "@/lib/site-url";
 
 function textField(form: FormData, name: string): string {
   const value = form.get(name);
@@ -42,8 +43,7 @@ export async function signUp(formData: FormData) {
     redirect("/login?error=invalid_signup");
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
-  const emailRedirectTo = new URL("/auth/confirm", siteUrl).toString();
+  const emailRedirectTo = new URL("/auth/confirm", getSiteUrl()).toString();
   const supabase = await createClient();
 
   const { error } = await supabase.auth.signUp({
