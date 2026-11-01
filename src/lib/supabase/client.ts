@@ -1,3 +1,4 @@
+import type { Database } from "@/types/database";
 import { createBrowserClient } from "@supabase/ssr";
 import { getSupabasePublicEnv } from "@/lib/supabase/env";
 
@@ -6,5 +7,5 @@ export function createClient() {
   if (!env) {
     throw new Error("Supabase is not configured. Add the project URL and publishable key.");
   }
-  return createBrowserClient(env.url, env.publishableKey);
+  return createBrowserClient<Database>(env.url, env.publishableKey);
 }
