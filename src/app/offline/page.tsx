@@ -48,24 +48,25 @@ export default function OfflinePage() {
           ئێستا ناتوانین پەیوەندی بە سێرڤەرەوە بکەین. پەیوەندی ئینتەرنێت بپشکنە
           و دووبارە هەوڵبدەرەوە.
         </p>
-        <button
-          type="button"
-          onClick="window.location.reload()"
+        <a
+          href="/"
           style={{
             minHeight: "46px",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
             marginTop: "18px",
             padding: "0 22px",
-            border: 0,
             borderRadius: "12px",
             background: "#16A34A",
             color: "#FFFFFF",
             fontSize: "12px",
             fontWeight: 800,
-            cursor: "pointer",
+            textDecoration: "none",
           }}
         >
           دووبارە هەوڵبدەرەوە
-        </button>
+        </a>
       </section>
     </main>
   );
