@@ -29,5 +29,5 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL("/login?error=confirmation_failed", request.url));
   }
 
-  return NextResponse.redirect(new URL("/access-pending", request.url));
+  return NextResponse.redirect(new URL("/workspace", request.url));
 }
