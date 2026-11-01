@@ -164,7 +164,7 @@ alter table public.stores enable row level security;
 alter table public.products enable row level security;
 
 create policy profiles_select_own on public.profiles
-for select to authenticated using ((select auth.uid()));
+for select to authenticated using ((select auth.uid()) = id);
 
 create policy profiles_insert_own on public.profiles
 for insert to authenticated with check ((select auth.uid()) = id);
