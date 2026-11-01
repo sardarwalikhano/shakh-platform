@@ -76,6 +76,12 @@ Resend is configured as the outbound email provider for order confirmations, mer
 
 See [docs/resend-email.md](docs/resend-email.md).
 
+## Progressive Web App
+
+SHAKH includes an installable PWA foundation with a Sorani RTL manifest, generated 192/512 px and maskable icons, production service-worker registration, and a generic offline fallback. The service worker intentionally does not cache authenticated pages, personal data, API responses, or financial/order information. Transactions remain online-only until a separately designed secure sync workflow exists.
+
+See [docs/pwa.md](docs/pwa.md) for the implementation and device verification checklist, and [docs/product-roadmap.md](docs/product-roadmap.md) for milestone order and acceptance gates.
+
 ## Deployment
 
 The Vercel project is linked to this repository and configured for Next.js with Node.js 22.x. Check the current build status in Vercel before treating the site as live.
