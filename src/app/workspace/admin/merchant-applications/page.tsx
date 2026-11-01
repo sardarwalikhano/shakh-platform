@@ -22,8 +22,15 @@ export default async function MerchantApplicationsReviewPage({
     .select("id,applicant_id,business_name,proposed_slug,merchant_category,description,contact_person,phone,city,district,address_line,status,review_note,submitted_at")
     .in("status", ["submitted", "under_review"])
     .order("submitted_at", { ascending: true });
+  const { data: stores, error: storesError } = await supabase
+    .from("stores")
+    .select("id,name,slug,status,merchant_category,city,district,created_at")
+    .eq("is_platform_store", false)
+    .in("status", ["active", "suspended"])
+    .order("created_at", { ascending: false });
   const params = await searchParams;
   if (error) console.error("Merchant application queue failed:", error.code);
+  if (storesError) console.error("Merchant store moderation queue failed:", storesError.code);
 
   return (
     <section className="workspace-page">
@@ -34,7 +41,7 @@ export default async function MerchantApplicationsReviewPage({
       />
       {params.result && (
         <div className="m03-notice m03-notice--success" role="status">
-          {params.result === "approve" ? "داواکاری پەسەند کرا." : params.result === "reject" ? "داواکاری ڕەتکرایەوە." : "داواکاری بۆ پشکنین دیاریکرا."}
+          {params.result === "approve" ? "داواکاری پەسەند کرا." : params.result === "reject" ? "داواکاری ڕەتکرایەوە." : params.result === "suspend_store" ? "فرۆشگا بە هۆکاری تۆمارکراو وەستێنرا." : params.result === "reactivate_store" ? "فرۆشگا دووبارە چالاک کرایەوە." : "داواکاری بۆ پشکنین دیاریکرا."}
         </div>
       )}
       {params.error === "note_required" && <div className="m03-notice m03-notice--error" role="alert">بۆ ڕەتکردنەوە، تێبینییەکی کورت بنووسە.</div>}
@@ -80,6 +87,47 @@ export default async function MerchantApplicationsReviewPage({
           ))}
         </div>
       )}
+      <section className="m03-panel">
+        <div className="m03-panel-heading">
+          <div>
+            <span className="section-kicker">STORE MODERATION</span>
+            <h2>چاودێری فرۆشگا چالاکەکان</h2>
+          </div>
+          <span className="m03-required-note">SHAKH STORE لەم لیستەدا نییە</span>
+        </div>
+        {storesError ? (
+          <EmptyState icon="!" title="لیستی فرۆشگا بارنەبوو" description="مافی دەستگەیشتن یان پەیوەندی بنکەدراوە بپشکنە." variant="error" />
+        ) : (stores ?? []).length === 0 ? (
+          <EmptyState icon="▤" title="هێشتا فرۆشگایەکی پەسەندکراو نییە" description="دوای پەسەندکردنی داواکارییەکان، فرۆشگا چالاکەکان لێرە دەردەکەون." />
+        ) : (
+          <div className="m03-history-list">
+            {(stores ?? []).map((store) => (
+              <article className="m03-store-moderation-row" key={store.id}>
+                <div className="m03-store-moderation-info">
+                  <strong>{store.name}</strong>
+                  <p>{CATEGORY_LABELS[store.merchant_category ?? ""] ?? store.merchant_category} · {store.city || "شار دیاری نەکراوە"} · {store.district || "گەڕەک دیاری نەکراوە"}</p>
+                  <small dir="ltr">/{store.slug}</small>
+                </div>
+                <div className="m03-store-moderation-controls">
+                  <span className={`m03-status m03-status--${store.status}`}>{store.status === "active" ? "چالاک" : "ڕاگیراو"}</span>
+                  <form action={reviewMerchantApplication} className="m03-store-moderation-form">
+                    <input type="hidden" name="store_id" value={store.id} />
+                    <label className="m03-field">
+                      <span>هۆکاری گۆڕینی دۆخ *</span>
+                      <input name="review_note" required minLength={2} maxLength={1200} placeholder="هۆکاری ڕاگرتن یان چالاککردنەوە..." />
+                    </label>
+                    {store.status === "active" ? (
+                      <button className="m03-danger-button" type="submit" name="decision" value="suspend_store">وەستاندنی فرۆشگا</button>
+                    ) : (
+                      <button className="button button--primary" type="submit" name="decision" value="reactivate_store">چالاککردنەوە</button>
+                    )}
+                  </form>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
     </section>
   );
 }

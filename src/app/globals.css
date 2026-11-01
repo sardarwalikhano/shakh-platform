@@ -1723,3 +1723,13 @@ a {
   .m03-store-facts{grid-template-columns:1fr 1fr}
 }
 @media(prefers-reduced-motion:reduce){.m03-field input,.m03-field select,.m03-field textarea{transition:none}}
+
+.m03-store-moderation-row{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 0;border-top:1px solid #edf1ee}
+.m03-store-moderation-info{display:grid;min-width:0;gap:5px}
+.m03-store-moderation-info strong{color:var(--ink);font-size:11px;font-weight:900}
+.m03-store-moderation-info p,.m03-store-moderation-info small{margin:0;color:var(--muted);font-size:9px;line-height:1.8}
+.m03-store-moderation-controls{display:grid;justify-items:end;gap:10px;min-width:220px}
+.m03-store-moderation-form{display:grid;width:100%;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:9px}
+.m03-store-moderation-form .m03-field input{min-height:39px}
+.m03-store-moderation-form button{min-height:39px;white-space:nowrap}
+@media(max-width:760px){.m03-store-moderation-row{align-items:stretch;flex-direction:column}.m03-store-moderation-controls{justify-items:stretch;min-width:0}.m03-store-moderation-controls>.m03-status{justify-self:start}.m03-store-moderation-form{grid-template-columns:1fr}.m03-store-moderation-form button{width:100%}}

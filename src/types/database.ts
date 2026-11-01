@@ -266,11 +266,57 @@ export type Database = {
         Relationships: []
       }
     }
+      store_moderation_events: {
+        Row: {
+          actor_id: string
+          created_at: string
+          id: string
+          new_status: string
+          note: string
+          previous_status: string
+          store_id: string
+        }
+        Insert: {
+          actor_id: string
+          new_status: string
+          note: string
+          previous_status: string
+          store_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          actor_id?: string
+          new_status?: string
+          note?: string
+          previous_status?: string
+          store_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_moderation_events_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      approve_merchant_application: {
+        Args: { p_application_id: string; p_review_note?: string | null; p_reviewer_id: string }
+        Returns: { applicant_id: string; merchant_category: string; store_id: string }[]
+      }
       current_app_role: { Args: never; Returns: string }
+      moderate_merchant_store: {
+        Args: { p_actor_id: string; p_new_status: string; p_note: string; p_store_id: string }
+        Returns: { new_status: string; previous_status: string; store_id: string }[]
+      }
     }
     Enums: {
       [_ in never]: never

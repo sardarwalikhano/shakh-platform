@@ -7,7 +7,7 @@ const corsHeaders = {
   "Content-Type": "application/json; charset=utf-8",
 };
 
-type Decision = "start_review" | "approve" | "reject";
+type Decision = "start_review" | "approve" | "reject" | "suspend_store" | "reactivate_store";
 type MerchantCategory = "restaurant" | "supermarket" | "fruits_vegetables" | "meat_seafood";
 
 const ROLE_BY_CATEGORY: Record<MerchantCategory, string> = {
@@ -61,23 +61,49 @@ Deno.serve(async (request: Request) => {
   if (!isRecord(body)) return respond({ error: "invalid_request" }, 400);
 
   const applicationId = typeof body.applicationId === "string" ? body.applicationId : "";
+  const storeId = typeof body.storeId === "string" ? body.storeId : "";
   const decision = body.decision as Decision;
   const reviewNote = typeof body.reviewNote === "string" ? body.reviewNote.trim() : "";
 
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(applicationId)) {
-    return respond({ error: "invalid_application_id" }, 400);
-  }
-  if (!["start_review", "approve", "reject"].includes(decision)) {
+  if (!["start_review", "approve", "reject", "suspend_store", "reactivate_store"].includes(decision)) {
     return respond({ error: "invalid_decision" }, 400);
   }
-  if (reviewNote.length > 1200 || (decision === "reject" && reviewNote.length < 2)) {
-    return respond({ error: "invalid_review_note" }, 400);
-  }
+  if (reviewNote.length > 1200) return respond({ error: "invalid_review_note" }, 400);
 
   const admin = createClient(url, serviceRoleKey, {
     auth: { autoRefreshToken: false, persistSession: false, detectSessionInUrl: false },
   });
 
+  if (decision === "suspend_store" || decision === "reactivate_store") {
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(storeId)) {
+      return respond({ error: "invalid_store_id" }, 400);
+    }
+    if (reviewNote.length < 2) return respond({ error: "moderation_note_required" }, 400);
+    const newStatus = decision === "suspend_store" ? "suspended" : "active";
+    const { data: moderation, error: moderationError } = await admin.rpc("moderate_merchant_store", {
+      p_store_id: storeId,
+      p_actor_id: user.id,
+      p_new_status: newStatus,
+      p_note: reviewNote,
+    });
+    if (moderationError || !moderation?.[0]) {
+      console.error("Merchant store moderation failed:", moderationError?.code ?? "empty_result");
+      return respond({ error: "store_moderation_failed" }, 409);
+    }
+    return respond({
+      ok: true,
+      storeId,
+      previousStatus: moderation[0].previous_status,
+      status: moderation[0].new_status,
+    });
+  }
+
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(applicationId)) {
+    return respond({ error: "invalid_application_id" }, 400);
+  }
+  if (decision === "reject" && reviewNote.length < 2) {
+    return respond({ error: "invalid_review_note" }, 400);
+  }
   if (decision === "start_review") {
     const { data, error } = await admin
       .from("merchant_applications")

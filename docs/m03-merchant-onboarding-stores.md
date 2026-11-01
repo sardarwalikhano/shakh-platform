@@ -34,6 +34,7 @@ The store table keeps its existing category values to preserve the catalog/RLS c
 - If database approval fails after the Auth role update, the Edge Function attempts to restore the applicant's previous app metadata. Rollback failures are logged for manual intervention.
 - Store owners may edit public profile fields only. They cannot change owner, category, platform-store flag or moderation status through the Data API.
 - A partial unique index limits each user to one non-platform store.
+- Admin/super-admin can suspend and reactivate active merchant stores. Every transition runs through a service-role-only row-locking RPC and writes an immutable moderation event with actor, old/new status, note and timestamp. The platform-owned SHAKH STORE is explicitly excluded.
 - The service-role credential stays in Supabase Edge Function environment variables and is never added to browser code or Vercel.
 - After approval, the applicant must refresh their session (sign out and sign in) to receive the new role claim.
 
@@ -49,6 +50,7 @@ The store table keeps its existing category values to preserve the catalog/RLS c
 - `20261101132254_m03_merchant_onboarding_stores.sql`
 - `20261101132343_m03_merchant_application_fk_indexes.sql`
 - `20261101132641_m03_applicant_identity_default.sql`
+- `20261101133728_m03_store_moderation_audit.sql`
 
 Never modify or reapply an already-applied migration.
 
@@ -62,6 +64,7 @@ Never modify or reapply an already-applied migration.
 - [ ] Approving each merchant category sets the mapped role and creates exactly one active store.
 - [ ] Rejection leaves the user's role as customer and records a reason.
 - [ ] Store owner can edit own public profile but cannot change status, category, owner or platform-store flag.
+- [ ] Admin/super admin can suspend and reactivate merchant-owned stores only; each status transition writes an audit event. SHAKH STORE cannot be moderated from this flow.
 - [ ] Cross-store access remains blocked by existing store/product RLS.
 - [ ] Existing Auth, PWA, profile/security and role route guards still pass.
 - [ ] Production and signed-in mobile flows are exercised before marking M03 released.
