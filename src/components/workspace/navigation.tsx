@@ -62,7 +62,7 @@ export function WorkspaceNavigation({ role }: Props) {
         {account.map((item) => <NavLink key={item.href} item={item} pathname={pathname} />)}
       </nav>
       <nav className="workspace-mobile-navigation" aria-label="ناوبەری مۆبایل">
-        {[...workItems, ...account].map((item) => <NavLink key={item.href} item={item} pathname={pathname} compact />)}
+        {[...workItems, ...account, { href: "/", label: "پەڕەی سەرەکی", shortLabel: "سەرەکی", icon: "⌂" }].map((item) => <NavLink key={item.href} item={item} pathname={pathname} compact />)}
       </nav>
     </>
   );
