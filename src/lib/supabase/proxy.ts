@@ -1,3 +1,4 @@
+import type { Database } from "@/types/database";
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getSupabasePublicEnv } from "@/lib/supabase/env";
@@ -7,7 +8,7 @@ export async function updateSession(request: NextRequest) {
   if (!env) return NextResponse.redirect(new URL("/setup-required", request.url));
 
   let response = NextResponse.next({ request });
-  const supabase = createServerClient(env.url, env.publishableKey, {
+  const supabase = createServerClient<Database>(env.url, env.publishableKey, {
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll(cookiesToSet, headers) {
