@@ -29,7 +29,9 @@ export async function GET(request: NextRequest) {
   }
 
   if (confirmationError) return NextResponse.redirect(new URL("/login?error=confirmation_failed", request.url));
-  if (rawType === "recovery") return NextResponse.redirect(new URL("/reset-password", request.url));
+  if (rawType === "recovery" || request.nextUrl.searchParams.get("flow") === "recovery") {
+    return NextResponse.redirect(new URL("/reset-password", request.url));
+  }
 
   const { data } = await supabase.auth.getClaims();
   const role = getRoleFromClaims(data?.claims);

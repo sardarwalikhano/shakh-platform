@@ -10,7 +10,7 @@ This repository starts clean and contains only the SHAKH platform foundation. It
 - Tailwind CSS v4
 - Kurdish Sorani-first RTL storefront
 - SHAKH visual palette: forest green, emerald, amber, white, slate, and red
-- Supabase SSR client utilities, email/password sign-in, sign-up, email confirmation, and sign-out
+- Supabase SSR cookie sessions, email/password sign-in/sign-up, confirmation/resend, password recovery/reset/change and explicit session revocation
 - Role-protected workspace routes for all platform roles
 - Database and Auth dashboard configuration remain pending until access to the designated Supabase project is authorized
 
@@ -75,6 +75,8 @@ Resend is configured as the outbound email provider for order confirmations, mer
 - This integration handles application business notifications. Supabase Auth SMTP/email templates remain a separate configuration step.
 
 See [docs/resend-email.md](docs/resend-email.md).
+
+M01 Auth dashboard settings and release checks are documented in [docs/m01-identity-account.md](docs/m01-identity-account.md).
 
 ## Progressive Web App
 

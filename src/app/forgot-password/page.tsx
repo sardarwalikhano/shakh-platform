@@ -17,7 +17,7 @@ async function requestPasswordReset(formData: FormData) {
   }
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: new URL("/auth/confirm", getSiteUrl()).toString(),
+    redirectTo: new URL("/auth/confirm?flow=recovery", getSiteUrl()).toString(),
   });
   if (error) console.error("Password reset request failed:", error.code);
   // Generic response prevents account enumeration.

@@ -14,7 +14,7 @@
 | ID | Milestone | Main deliverables | Acceptance gate |
 |---|---|---|---|
 | M00 | Platform foundation and PWA | Verified custom domain, production/preview URL handling, installable manifest, icons, service worker, offline shell | Production build ready; domain resolves; manifest and icons valid; SW registered; no sensitive data cached |
-| M01 | Identity and account profile | Sign-up, sign-in, email confirmation, password recovery, session expiry, profile completion, account security | End-to-end Auth tests pass; profile owner-only RLS verified; role claims cannot be changed by the browser |
+| M01 | Identity and account profile | Sign-up, sign-in, email confirmation/resend, password recovery/reset/change, session revocation, profile completion, account security | Auth URL/provider/templates/SMTP configured; end-to-end Auth tests pass on production and preview; owner-only profile RLS verified; role claims cannot be changed by browser |
 | M02 | Shared application shell | Responsive RTL navigation, role-aware menu, loading/error/empty states, common design tokens | Keyboard, mobile, RTL and role-navigation checks pass |
 | M03 | Merchant onboarding and stores | Merchant applications, category assignment, store profile, approval/suspension lifecycle | Merchant can access only its own store and allowed category |
 | M04 | Catalog and inventory | Categories, product CRUD, media upload, variants, stock, availability and pricing | RLS and storage policies prevent cross-store access; stock updates are consistent |
@@ -35,7 +35,7 @@
 ## Current implementation baseline
 
 - Domain: Vercel reports `daim-post.online` and `www.daim-post.online` verified on `shakh-platform`; apex redirects to `www` with status 308.
-- Auth: Supabase Auth SSR and role-protected workspaces exist. Dashboard provider, email templates and complete end-to-end verification remain release checks.
+- Auth: M01 application code includes SSR cookie sessions, email/password sign-in/sign-up, confirmation/resend, recovery/reset, reauthenticated password change and explicit session revocation. Supabase dashboard provider, URL, templates, SMTP and end-to-end verification remain release checks.
 - Profile: own-profile display and update flow exists for full name, phone and preferred locale. Email and trusted role are read-only in the profile screen.
 - Business email: Resend server helpers and Sorani templates exist; they still need to be connected to committed order/delivery events.
 - PWA: v1 shell, manifest, install prompt and conservative offline fallback are implemented. Push notifications and offline transactions are intentionally deferred.

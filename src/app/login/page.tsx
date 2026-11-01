@@ -24,7 +24,7 @@ const MESSAGES: Record<string, string> = {
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
   const configured = isSupabaseConfigured();
-  const showResend = params.message === "check_email" || params.error === "email_not_confirmed";
+  const showResend = params.message === "check_email" || params.error === "email_not_confirmed" || params.error === "confirmation_failed";
 
   return (
     <main className="auth-page">

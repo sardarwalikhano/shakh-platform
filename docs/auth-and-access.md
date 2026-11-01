@@ -54,19 +54,16 @@ Proxy is only an early session gate. Each workspace route layout also performs a
 - Store approval/status and product publication/status are not directly writable through the browser's table grants. Those workflows will be exposed through audited server-side operations after fee and wallet logic is implemented.
 - Prices use `bigint` IQD units.
 
-## Email confirmation
+## Identity and recovery routes
 
-The handler is `/auth/confirm`. Configure Supabase Auth email confirmation template to send users to:
+- `/login`: email/password sign-in, registration and resend confirmation.
+- `/auth/confirm`: supports PKCE code exchange and token-hash verification.
+- `/forgot-password`: generic password recovery request.
+- `/reset-password`: password update after a valid recovery session.
+- `/workspace/security`: password update after current-password reauthentication, plus session revocation.
+- Sign-out from the workspace revokes only the current session; a separate POST action revokes all sessions.
 
-```
-{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email
-```
-
-In Supabase Dashboard → Authentication → URL Configuration:
-- Set Site URL to the production site origin.
-- Add `http://localhost:3000/auth/confirm` for local development.
-- Add the production callback `https://shakh-platform-sardars-projects-d8734553.vercel.app/auth/confirm`.
-- Add any future custom production domain callback.
+See [M01 Identity & Account](m01-identity-account.md) for required dashboard URL/provider/template/SMTP configuration and release checks.
 
 ## First Super Admin
 
@@ -74,7 +71,7 @@ The sign-up flow intentionally does not grant elevated privileges. Create the fi
 
 ## Pending configuration
 
-- Supabase project access and the publishable client key are now configured.
-- Email confirmation provider settings and redirect allow-list must be reviewed in the Auth dashboard.
+- Configure Auth email confirmation, redirect allow-list, recovery/confirmation templates, password policy and custom SMTP in the Supabase Dashboard.
+- Enable leaked-password protection when it is available on the project plan; it was reported disabled by Security Advisor.
 - The first Super Admin must be provisioned by trusted administration.
 - Orders, wallet ledger, delivery payouts, notification and reward schemas are next migrations; they are not enabled yet.
