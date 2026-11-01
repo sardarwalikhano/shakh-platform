@@ -72,8 +72,8 @@ export default function HomePage() {
             <Link className="text-link" href="#partners">
               هاوبەشبوون
             </Link>
-            <Link className="button button--dark button--small" href="#categories">
-              دەستپێبکە
+            <Link className="button button--dark button--small" href="/login">
+              چوونەژوورەوە
               <span aria-hidden="true">←</span>
             </Link>
           </div>
