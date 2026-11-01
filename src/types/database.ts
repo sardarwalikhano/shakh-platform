@@ -154,8 +154,66 @@ export type Database = {
         }
         Relationships: []
       }
+      merchant_applications: {
+        Row: {
+          address_line: string
+          applicant_id: string
+          business_name: string
+          city: string
+          contact_person: string
+          created_at: string
+          description: string | null
+          district: string
+          id: string
+          merchant_category: string
+          phone: string
+          proposed_slug: string | null
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          store_id: string | null
+          submitted_at: string
+          updated_at: string
+        }
+        Insert: {
+          address_line: string
+          business_name: string
+          city: string
+          contact_person: string
+          description?: string | null
+          district: string
+          merchant_category: string
+          phone: string
+          proposed_slug?: string | null
+        }
+        Update: {
+          address_line?: string
+          business_name?: string
+          city?: string
+          contact_person?: string
+          description?: string | null
+          district?: string
+          merchant_category?: string
+          phone?: string
+          proposed_slug?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merchant_applications_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stores: {
         Row: {
+          address_line: string | null
+          city: string | null
+          contact_person: string | null
+          district: string | null
           created_at: string
           description: string | null
           id: string
@@ -170,6 +228,10 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          address_line?: string | null
+          city?: string | null
+          contact_person?: string | null
+          district?: string | null
           created_at?: string
           description?: string | null
           id?: string
@@ -184,6 +246,10 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          address_line?: string | null
+          city?: string | null
+          contact_person?: string | null
+          district?: string | null
           created_at?: string
           description?: string | null
           id?: string
