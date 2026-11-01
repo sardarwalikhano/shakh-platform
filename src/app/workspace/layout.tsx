@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { requireAuthenticatedContext } from "@/lib/auth/guards";
 import { ROLE_LABELS, ROLE_WORKSPACE_LABELS } from "@/lib/auth/presentation";
-import { WorkspaceNavigation } from "@/components/workspace/navigation";
+import { WorkspaceMobileNavigation, WorkspaceNavigation } from "@/components/workspace/navigation";
 
 export default async function WorkspaceLayout({ children }: Readonly<{ children: ReactNode }>) {
   const user = await requireAuthenticatedContext();
@@ -42,6 +42,7 @@ export default async function WorkspaceLayout({ children }: Readonly<{ children:
         </header>
         <main className="workspace-content"><div className="workspace-content-inner">{children}</div></main>
       </div>
+      <WorkspaceMobileNavigation role={user.role} />
     </div>
   );
 }

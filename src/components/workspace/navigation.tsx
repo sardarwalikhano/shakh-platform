@@ -34,6 +34,25 @@ function NavLink({ item, pathname, compact = false }: { item: Item; pathname: st
     </Link>
   );
 }
+
+export function WorkspaceMobileNavigation({ role }: Props) {
+  const pathname = usePathname() || ROLE_HOME[role];
+  const primary: Item[] = [{ href: ROLE_HOME[role], label: HOME_LABELS[role], shortLabel: HOME_LABELS[role], icon: HOME_ICONS[role] }];
+  const workspaceItems: Item[] = role === "customer"
+    ? [{ href: "/workspace/merchant-application", label: "بەشداربوون وەک فرۆشیار", shortLabel: "فرۆشیار", icon: "＋" }]
+    : role === "restaurant" || role === "supermarket" || role === "produce_vendor" || role === "meat_seafood_vendor"
+      ? [{ href: "/workspace/merchant/store", label: "زانیاری فرۆشگا", shortLabel: "فرۆشگا", icon: "▤" }]
+      : role === "admin" || role === "super_admin"
+        ? [{ href: "/workspace/admin/merchant-applications", label: "داواکاری فرۆشیاران", shortLabel: "داواکاری", icon: "✓" }]
+        : [];
+  const account: Item[] = [
+    { href: "/workspace/profile", label: "پرۆفایلی من", shortLabel: "پرۆفایل", icon: "◎" },
+    { href: "/workspace/security", label: "ئاسایشی هەژمار", shortLabel: "ئاسایش", icon: "⌑" },
+  ];
+  return <nav className="workspace-mobile-navigation" aria-label="ناوبەری مۆبایل">
+    {[...primary, ...workspaceItems, ...account, { href: "/", label: "پەڕەی سەرەکی", shortLabel: "سەرەکی", icon: "⌂" }].slice(0, 4).map((item) => <NavLink key={item.href} item={item} pathname={pathname} compact />)}
+  </nav>;
+}
 export function WorkspaceNavigation({ role }: Props) {
   const pathname = usePathname() || ROLE_HOME[role];
   const primary: Item[] = [{
@@ -60,9 +79,6 @@ export function WorkspaceNavigation({ role }: Props) {
         {workItems.map((item) => <NavLink key={item.href} item={item} pathname={pathname} />)}
         <span className="workspace-nav-caption workspace-nav-caption--account">هەژمار</span>
         {account.map((item) => <NavLink key={item.href} item={item} pathname={pathname} />)}
-      </nav>
-      <nav className="workspace-mobile-navigation" aria-label="ناوبەری مۆبایل">
-        {[...workItems, ...account, { href: "/", label: "پەڕەی سەرەکی", shortLabel: "سەرەکی", icon: "⌂" }].map((item) => <NavLink key={item.href} item={item} pathname={pathname} compact />)}
       </nav>
     </>
   );
