@@ -20,22 +20,16 @@ export default function manifest(): MetadataRoute.Manifest {
     prefer_related_applications: false,
     icons: [
       {
-        src: "/pwa-icon-192",
+        src: "/icons/icon-192.png",
         sizes: "192x192",
         type: "image/png",
         purpose: "any",
       },
       {
-        src: "/pwa-icon-512",
+        src: "/icons/icon-512.png",
         sizes: "512x512",
         type: "image/png",
         purpose: "any",
-      },
-      {
-        src: "/pwa-icon-maskable-512",
-        sizes: "512x512",
-        type: "image/png",
-        purpose: "maskable",
       },
     ],
     shortcuts: [
@@ -43,13 +37,13 @@ export default function manifest(): MetadataRoute.Manifest {
         name: "کردنەوەی هەژمار",
         short_name: "هەژمار",
         url: "/workspace",
-        icons: [{ src: "/pwa-icon-192", sizes: "192x192", type: "image/png" }],
+        icons: [{ src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
       },
       {
         name: "پرۆفایل",
         short_name: "پرۆفایل",
         url: "/workspace/profile",
-        icons: [{ src: "/pwa-icon-192", sizes: "192x192", type: "image/png" }],
+        icons: [{ src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" }],
       },
     ],
   };

@@ -3,7 +3,7 @@
 const CACHE_PREFIX = "shakh-pwa-";
 const CACHE_NAME = `${CACHE_PREFIX}shell-v1`;
 const OFFLINE_URL = "/offline";
-const STATIC_PREFIXES = ["/_next/static/", "/pwa-icon-"];
+const STATIC_PREFIXES = ["/_next/static/", "/icons/"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
