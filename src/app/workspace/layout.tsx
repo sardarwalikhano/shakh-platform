@@ -26,6 +26,7 @@ export default async function WorkspaceLayout({ children }: Readonly<{ children:
       </aside>
       <div className="workspace-main">
         <header className="workspace-topbar">
+          <Link href="/" className="workspace-topbar-home" aria-label="گەڕانەوە بۆ پەڕەی سەرەکی">⌂ <span>پەڕەی سەرەکی</span></Link>
           <div className="workspace-topbar-context">
             <span className="workspace-topbar-eyebrow">SHAKH WORKSPACE</span>
             <strong>{ROLE_WORKSPACE_LABELS[user.role]}</strong>
