@@ -32,6 +32,29 @@ export async function requireAuthenticatedContext() {
   return context as AuthenticatedContext & { role: UserRole };
 }
 
+export async function requireMerchantAccess() {
+  const context = await requireAuthenticatedContext();
+  if (!["restaurant", "supermarket", "produce_vendor", "meat_seafood_vendor"].includes(context.role)) {
+    redirect(ROLE_HOME[context.role]);
+  }
+
+  const supabase = await createClient();
+  const { data: store, error } = await supabase
+    .from("stores")
+    .select("id,status")
+    .eq("owner_id", context.id)
+    .eq("is_platform_store", false)
+    .maybeSingle();
+
+  if (error || !store) {
+    console.error("Merchant access store check failed:", error?.code ?? "store_not_found");
+    redirect("/access-pending");
+  }
+  if (store.status !== "active") redirect("/merchant-suspended");
+
+  return context as AuthenticatedContext & { role: UserRole };
+}
+
 export async function requireRoles(allowedRoles: readonly UserRole[]) {
   const context = await requireAuthenticatedContext();
   if (!allowedRoles.includes(context.role)) redirect(ROLE_HOME[context.role]);
