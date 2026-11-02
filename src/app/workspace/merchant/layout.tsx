@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
-import { requireRoles } from "@/lib/auth/guards";
-import { MERCHANT_ROLES } from "@/lib/auth/roles";
+import { requireMerchantAccess } from "@/lib/auth/guards";
 
 export default async function MerchantLayout({ children }: Readonly<{ children: ReactNode }>) {
-  await requireRoles(MERCHANT_ROLES);
+  await requireMerchantAccess();
   return children;
 }
