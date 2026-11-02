@@ -63,7 +63,7 @@ export async function signUp(formData: FormData) {
     Array.from(password).length < MIN_PASSWORD_LENGTH ||
     Array.from(password).length > MAX_PASSWORD_LENGTH ||
     password !== confirmation
-  ) redirect("/login?error=invalid_signup");
+  ) redirect("/signup?error=invalid_signup");
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signUp({
@@ -77,10 +77,10 @@ export async function signUp(formData: FormData) {
   });
   if (error) {
     console.error("Supabase sign-up failed:", error.code);
-    redirect("/login?error=signup_failed");
+    redirect("/signup?error=signup_failed");
   }
   // Generic result prevents email-account enumeration.
-  redirect("/login?message=check_email");
+  redirect("/signup?message=check_email");
 }
 
 export async function resendSignupConfirmation(formData: FormData) {

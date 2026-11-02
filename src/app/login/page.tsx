@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { resendSignupConfirmation, signIn, signUp } from "@/app/login/actions";
+import { resendSignupConfirmation, signIn } from "@/app/login/actions";
 import { redirect } from "next/navigation";
 import { getAuthenticatedContext } from "@/lib/auth/guards";
 import { ROLE_HOME } from "@/lib/auth/roles";
@@ -77,19 +77,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
               </div>
             )}
 
-            <div className="auth-divider"><span>یان هەژمارێکی نوێ دروست بکە</span></div>
-            <form action={signUp} className="auth-form">
-              <label htmlFor="full_name">ناوی تەواو</label>
-              <input id="full_name" name="full_name" type="text" autoComplete="name" minLength={2} maxLength={160} required disabled={!configured} />
-              <label htmlFor="signup_email">ئیمەیڵ</label>
-              <input id="signup_email" name="signup_email" type="email" autoComplete="email" maxLength={254} required disabled={!configured} placeholder="name@example.com" />
-              <label htmlFor="signup_password">وشەی نهێنی</label>
-              <input id="signup_password" name="signup_password" type="password" autoComplete="new-password" minLength={12} maxLength={128} required disabled={!configured} placeholder="لانیکەم ١٢ پیت" />
-              <label htmlFor="signup_password_confirmation">دووبارە وشەی نهێنی بنووسە</label>
-              <input id="signup_password_confirmation" name="signup_password_confirmation" type="password" autoComplete="new-password" minLength={12} maxLength={128} required disabled={!configured} placeholder="هەمان وشەی نهێنی" />
-              <small className="auth-field-hint">وشەی نهێنییەکی درێژ و تایبەت بە SHAKH بەکاربهێنە.</small>
-              <button className="button button--quiet auth-submit" type="submit" disabled={!configured}>دروستکردنی هەژمار</button>
-            </form>
+            <div className="auth-divider"><span>هەژمارت نییە؟</span></div>
+            <Link className="button button--quiet auth-submit" href="/signup">دروستکردنی هەژمار</Link>
+
             <p className="auth-back"><Link href="/">گەڕانەوە بۆ پەڕەی سەرەکی</Link></p>
           </section>
         </div>
