@@ -41,7 +41,7 @@ export function WorkspaceMobileNavigation({ role }: Props) {
   const workspaceItems: Item[] = role === "customer"
     ? [{ href: "/workspace/merchant-application", label: "بەشداربوون وەک فرۆشیار", shortLabel: "فرۆشیار", icon: "＋" }]
     : role === "restaurant" || role === "supermarket" || role === "produce_vendor" || role === "meat_seafood_vendor"
-      ? [{ href: "/workspace/merchant/store", label: "زانیاری فرۆشگا", shortLabel: "فرۆشگا", icon: "▤" }]
+      ? [{ href: "/workspace/merchant/store", label: "زانیاری فرۆشگا", shortLabel: "فرۆشگا", icon: "▤" }, { href: "/workspace/merchant/products", label: "بەرهەم و کۆگا", shortLabel: "بەرهەم", icon: "▦" }]
       : role === "admin" || role === "super_admin"
         ? [{ href: "/workspace/admin/merchant-applications", label: "داواکاری فرۆشیاران", shortLabel: "داواکاری", icon: "✓" }]
         : [];
