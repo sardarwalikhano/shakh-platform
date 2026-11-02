@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+import { getRoleFromClaims, ROLE_HOME } from "@/lib/auth/roles";
 
 const categories = [
   {
@@ -49,7 +51,11 @@ const benefits = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const supabase = await createClient();
+  const { data: auth } = await supabase.auth.getClaims();
+  const role = getRoleFromClaims(auth?.claims);
+  const workspaceHref = role ? ROLE_HOME[role] : null;
   return (
     <main>
       <header className="site-header">
