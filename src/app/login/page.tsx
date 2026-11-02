@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { resendSignupConfirmation, signIn, signUp } from "@/app/login/actions";
+import { redirect } from "next/navigation";
+import { getAuthenticatedContext } from "@/lib/auth/guards";
+import { ROLE_HOME } from "@/lib/auth/roles";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 type LoginPageProps = { searchParams: Promise<{ error?: string; message?: string }> };
@@ -22,6 +25,9 @@ const MESSAGES: Record<string, string> = {
 };
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
+  const currentUser = await getAuthenticatedContext();
+  if (currentUser?.role) redirect(ROLE_HOME[currentUser.role]);
+  if (currentUser && !currentUser.role) redirect("/access-pending");
   const params = await searchParams;
   const configured = isSupabaseConfigured();
   const showResend = params.message === "check_email" || params.error === "email_not_confirmed" || params.error === "confirmation_failed";

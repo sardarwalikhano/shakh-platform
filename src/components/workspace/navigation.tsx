@@ -50,7 +50,7 @@ export function WorkspaceMobileNavigation({ role }: Props) {
     { href: "/workspace/security", label: "ئاسایشی هەژمار", shortLabel: "ئاسایش", icon: "⌑" },
   ];
   return <nav className="workspace-mobile-navigation" aria-label="ناوبەری مۆبایل">
-    {[...primary, ...workspaceItems, ...account, { href: "/", label: "پەڕەی سەرەکی", shortLabel: "سەرەکی", icon: "⌂" }].slice(0, 4).map((item) => <NavLink key={item.href} item={item} pathname={pathname} compact />)}
+    {[...primary, account[0], account[1], { href: "/", label: "پەڕەی سەرەکی", shortLabel: "سەرەکی", icon: "⌂" }].map((item) => <NavLink key={item.href} item={item} pathname={pathname} compact />)}
   </nav>;
 }
 export function WorkspaceNavigation({ role }: Props) {
