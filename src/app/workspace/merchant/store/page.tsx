@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { requireRoles } from "@/lib/auth/guards";
-import { MERCHANT_ROLES } from "@/lib/auth/roles";
+import { requireMerchantAccess } from "@/lib/auth/guards";
 import { createClient } from "@/lib/supabase/server";
 import { WorkspacePageHeader, EmptyState } from "@/components/workspace/shared";
 import { updateMerchantStoreProfile } from "./actions";
@@ -10,7 +9,7 @@ export default async function MerchantStoreProfilePage({
 }: {
   searchParams: Promise<{ saved?: string; error?: string }>;
 }) {
-  const merchant = await requireRoles(MERCHANT_ROLES);
+  const merchant = await requireMerchantAccess();
   const supabase = await createClient();
   const { data: store, error } = await supabase
     .from("stores")
