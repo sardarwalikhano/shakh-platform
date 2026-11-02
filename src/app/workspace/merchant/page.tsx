@@ -1,11 +1,10 @@
 import Link from "next/link";
-import { requireRoles } from "@/lib/auth/guards";
-import { MERCHANT_ROLES } from "@/lib/auth/roles";
+import { requireMerchantAccess } from "@/lib/auth/guards";
 import { createClient } from "@/lib/supabase/server";
 import { EmptyState, WorkspacePageHeader } from "@/components/workspace/shared";
 
 export default async function MerchantPage() {
-  const merchant = await requireRoles(MERCHANT_ROLES);
+  const merchant = await requireMerchantAccess();
   const supabase = await createClient();
   const { data: store, error } = await supabase
     .from("stores")
