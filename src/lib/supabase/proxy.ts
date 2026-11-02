@@ -3,7 +3,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { getSupabasePublicEnv } from "@/lib/supabase/env";
 
-export async function updateSession(request: NextRequest) {
+export async function updateSession(request: NextRequest, requireAuth = true) {
   const env = getSupabasePublicEnv();
   if (!env) return NextResponse.redirect(new URL("/setup-required", request.url));
 
@@ -24,6 +24,8 @@ export async function updateSession(request: NextRequest) {
   const claims = data?.claims as Record<string, unknown> | undefined;
 
   if (error || typeof claims?.sub !== "string") {
+    if (!requireAuth) return response;
+
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.search = "";
@@ -35,7 +37,7 @@ export async function updateSession(request: NextRequest) {
     return redirectResponse;
   }
 
-  // Workspace pages are account-specific; prevent browser/proxy caching of stale auth UI.
+  // Account-specific responses must not be cached by the browser or a proxy.
   response.headers.set("Cache-Control", "private, no-store, max-age=0");
   return response;
 }
