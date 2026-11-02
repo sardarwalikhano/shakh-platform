@@ -2,8 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { requireRoles } from "@/lib/auth/guards";
-import { MERCHANT_ROLES } from "@/lib/auth/roles";
+import { requireMerchantAccess } from "@/lib/auth/guards";
 import { createClient } from "@/lib/supabase/server";
 
 function value(formData: FormData, field: string): string {
@@ -12,7 +11,7 @@ function value(formData: FormData, field: string): string {
 }
 
 export async function updateMerchantStoreProfile(formData: FormData) {
-  const merchant = await requireRoles(MERCHANT_ROLES);
+  const merchant = await requireMerchantAccess();
   const name = value(formData, "name");
   const rawSlug = value(formData, "slug");
   const slug = rawSlug.toLowerCase().replace(/[^a-z0-9_-]+/g, "-").replace(/[-_]{2,}/g, "-").replace(/^[-_]+|[-_]+$/g, "");
