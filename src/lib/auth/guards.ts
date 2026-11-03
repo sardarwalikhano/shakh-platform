@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getSupabasePublicEnv } from "@/lib/supabase/env";
-import { getRoleFromClaims, ROLE_HOME, type UserRole } from "@/lib/auth/roles";
+import { MERCHANT_ROLES, getRoleFromClaims, ROLE_HOME, type UserRole } from "@/lib/auth/roles";
 
 export type AuthenticatedContext = {
   id: string;
@@ -29,6 +29,34 @@ export async function requireAuthenticatedContext() {
   const context = await getAuthenticatedContext();
   if (!context) redirect("/login");
   if (!context.role) redirect("/access-pending");
+  return context as AuthenticatedContext & { role: UserRole };
+}
+
+export async function requireMerchantAccess() {
+  const context = await requireAuthenticatedContext();
+  if (!MERCHANT_ROLES.includes(context.role)) {
+    redirect(ROLE_HOME[context.role]);
+  }
+
+  const supabase = await createClient();
+  // Fetch at most two rows so duplicate non-platform stores fail closed.
+  const { data: stores, error } = await supabase
+    .from("stores")
+    .select("id,status")
+    .eq("owner_id", context.id)
+    .eq("is_platform_store", false)
+    .limit(2);
+
+  if (error || !stores || stores.length !== 1) {
+    console.error(
+      "Merchant access store check failed:",
+      error?.code ?? (stores?.length ? "multiple_owned_stores" : "store_not_found"),
+    );
+    redirect("/access-pending");
+  }
+
+  if (stores[0].status !== "active") redirect("/merchant-suspended");
+
   return context as AuthenticatedContext & { role: UserRole };
 }
 
