@@ -1,9 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getSupabasePublicEnv } from "@/lib/supabase/env";
+import { getSupabasePublicEnv, isSupabaseConfigured } from "@/lib/supabase/env";
 import { getSiteUrl } from "@/lib/site-url";
-import { isSupabaseConfigured } from "@/lib/supabase/env";
 
 type PageProps = { searchParams: Promise<{ error?: string; message?: string }> };
 
@@ -15,12 +14,21 @@ async function requestPasswordReset(formData: FormData) {
   if (email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     redirect("/forgot-password?error=invalid_email");
   }
+
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: new URL("/auth/confirm?flow=recovery", getSiteUrl()).toString(),
   });
-  if (error) console.error("Password reset request failed:", error.code);
-  // Generic response prevents account enumeration.
+
+  // Keep the response generic to prevent account enumeration. Log only safe
+  // diagnostic metadata; never log the submitted email or credentials.
+  if (error) {
+    console.error("Password reset request failed:", {
+      name: error.name || "AuthError",
+      status: error.status ?? null,
+      code: error.code ?? null,
+    });
+  }
   redirect("/forgot-password?message=requested");
 }
 
