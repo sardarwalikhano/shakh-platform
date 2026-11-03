@@ -53,7 +53,7 @@ The exact fee schedule, rounding convention, tax treatment, and refund policy mu
 6. Build administration, wallet, ledger, and reporting interfaces.
 7. Connect each domain to Supabase with validated server actions, RLS, and audit logging.
 
-The current repository intentionally stops before authentication and database integration because the connected Supabase account cannot yet access the supplied project reference.
+The application is connected to the ShakhStore primary Supabase project `vtxntrcsjmnmbnfxhfgz` in `eu-central-1`. The repository tracks the applied database migrations in `supabase/migrations`. Auth, RLS and service-role Edge Functions are part of the current implementation; order creation orchestration, payment capture/top-up, dispatch automation, and end-to-end multi-role tests remain separate acceptance gates.
 
 ## Migration discipline
 
