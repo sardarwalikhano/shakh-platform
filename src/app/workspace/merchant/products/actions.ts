@@ -39,8 +39,8 @@ export async function createMerchantProduct(data: FormData) {
     price_iqd: price,
     stock_quantity: stock,
     unit,
-    status: "draft",
-    is_available: true,
+    // status and is_available are intentionally omitted: PostgreSQL defaults
+    // create a draft/unavailable-to-public record without widening INSERT grants.
   });
 
   if (error) {
