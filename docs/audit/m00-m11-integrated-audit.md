@@ -26,7 +26,7 @@ No production data, remote schema, migration history, production environment var
 | M08 | Wallet and financial ledger | Financial invariants are documented; no wallet/ledger tables or settlement RPCs found | No editable balance fields or simulated money movement added | Not implemented; requires accounting model, idempotency, and atomic settlement design |
 | M09 | Notifications and realtime | Resend helper/templates exist; no notification tables or realtime subscription implementation found | No artificial realtime events added | Partial foundation only; event outbox, preference, retry, and multi-session tests pending |
 | M10 | Super Admin and reporting | Admin role shell and merchant moderation exist; no general reports/audit analytics data model found | Existing merchant moderation remains available; no fake reports or financial KPIs added | Partial; user governance, reporting, and operations center pending |
-| M11 | Production hardening | Lint/typecheck/build scripts exist; no test runner, lockfile, or GitHub Actions workflow found | Add a GitHub Actions quality workflow, a migration filename/duplicate-version check, and pin direct dependency versions | CI added in branch; test suite, lockfile, backups, monitoring, and release verification remain pending |
+| M11 | Production hardening | Lint/typecheck/build scripts exist; no test runner, lockfile, or GitHub Actions workflow found | Add a GitHub Actions quality workflow, a migration filename/duplicate-version check, add the script to package.json, and pin direct dependency versions | CI added in branch; test suite, lockfile, backups, monitoring, and release verification remain pending |
 
 ## Verified Supabase baseline
 
@@ -44,9 +44,9 @@ Live public tables found:
 - `merchant_applications`
 - `store_moderation_events`
 
-RLS was enabled on all six tables at inspection time. The live row counts observed were: 7 profiles, 0 catalog categories, 5 stores (1 platform store and 4 active merchant stores), 0 products, 4 merchant applications, and 8 moderation events. These are a time-specific inspection snapshot, not a guaranteed ongoing count.
+RLS was enabled on all six tables at inspection time. The live row counts observed were: 7 profiles, 0 catalog categories, 5 stores (1 platform store and 4 active merchant stores), 0 products, 4 merchant applications, and 8 moderation events. These observed counts imply the new marketplace can show active store records but currently has no category rows or product cards to display. These are a time-specific inspection snapshot, not a guaranteed ongoing count.
 
-There are no live public tables for carts, orders, deliveries, captain assignments, wallets, ledgers, notification inboxes, or event outboxes. This is why M06–M10 have not been represented with fake UI data or guessed SQL.
+There are no live public tables for carts, orders, deliveries, captain assignments, wallets, ledgers, notification inboxes, or event outboxes. A direct inspection of the `supabase_realtime` publication returned no included tables, and no custom Storage buckets were present. This is why M06–M10 have not been represented with fake UI data or guessed SQL; Realtime and upload workflows are not accepted as operational yet.
 
 ### Applied migration history
 
@@ -88,6 +88,12 @@ Two Vercel projects are connected to the repository:
 2. `shakh-platform-au64` — separate project; a recent build failed during prerender of `/` because `NEXT_PUBLIC_SUPABASE_URL` and the publishable key were not configured for that project. The Next.js compile and TypeScript stages had completed before the prerender failure.
 
 The public home page in this branch no longer throws merely because Supabase public configuration is absent at build time. Vercel project settings and environment variables were not modified. The correct production project/domain ownership should be confirmed before changing or removing the secondary project.
+
+## Realtime, Storage, and seed-data status
+
+- The `supabase_realtime` publication contained no tables when inspected. No multi-session event propagation test was performed.
+- The Storage bucket list contained no custom buckets. Product/store image uploads and bucket policies are therefore not implemented or verified.
+- No seed data or mock records were added. Existing live table counts were not changed by this branch.
 
 ## Verification status
 
