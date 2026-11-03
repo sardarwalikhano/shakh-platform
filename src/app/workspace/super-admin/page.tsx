@@ -1,4 +1,4 @@
-import { EmptyState, WorkspacePageHeader } from "@/components/workspace/shared";
+import { WorkspacePageHeader } from "@/components/workspace/shared";
 export default function SuperAdminPage() {
   return (
     <section className="workspace-page">
