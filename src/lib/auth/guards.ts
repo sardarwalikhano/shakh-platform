@@ -1,12 +1,17 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getSupabasePublicEnv } from "@/lib/supabase/env";
-import { getRoleFromClaims, ROLE_HOME, type UserRole } from "@/lib/auth/roles";
+import { MERCHANT_ROLES, getRoleFromClaims, ROLE_HOME, type UserRole } from "@/lib/auth/roles";
 
 export type AuthenticatedContext = {
   id: string;
   email: string | null;
   role: UserRole | null;
+};
+
+export type MerchantContext = AuthenticatedContext & {
+  role: (typeof MERCHANT_ROLES)[number];
+  storeId: string;
 };
 
 export async function getAuthenticatedContext(): Promise<AuthenticatedContext | null> {
@@ -36,4 +41,40 @@ export async function requireRoles(allowedRoles: readonly UserRole[]) {
   const context = await requireAuthenticatedContext();
   if (!allowedRoles.includes(context.role)) redirect(ROLE_HOME[context.role]);
   return context;
+}
+
+/**
+ * Verifies both the trusted merchant role and the single active,
+ * non-platform store owned by the authenticated account.
+ * All merchant pages and mutations must use this server-side guard.
+ */
+export async function requireMerchantAccess(): Promise<MerchantContext> {
+  const context = await requireAuthenticatedContext();
+  if (!MERCHANT_ROLES.includes(context.role)) redirect(ROLE_HOME[context.role]);
+
+  const supabase = await createClient();
+  const { data: stores, error } = await supabase
+    .from("stores")
+    .select("id,status")
+    .eq("owner_id", context.id)
+    .eq("is_platform_store", false)
+    .limit(2);
+
+  if (error || !stores || stores.length !== 1) {
+    console.error(
+      "Merchant access store check failed:",
+      error?.code ?? (stores?.length ? "multiple_owned_stores" : "store_not_found"),
+    );
+    redirect("/access-pending");
+  }
+
+  const store = stores[0];
+  if (store.status === "suspended") redirect("/merchant-suspended");
+  if (store.status !== "active") redirect("/access-pending");
+
+  return {
+    ...context,
+    role: context.role as MerchantContext["role"],
+    storeId: store.id,
+  };
 }

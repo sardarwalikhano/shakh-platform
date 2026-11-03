@@ -1,6 +1,5 @@
 import Link from "next/link";
-import { requireRoles } from "@/lib/auth/guards";
-import { MERCHANT_ROLES } from "@/lib/auth/roles";
+import { requireMerchantAccess } from "@/lib/auth/guards";
 import { createClient } from "@/lib/supabase/server";
 import { WorkspacePageHeader, EmptyState } from "@/components/workspace/shared";
 import { updateMerchantStoreProfile } from "./actions";
@@ -10,13 +9,13 @@ export default async function MerchantStoreProfilePage({
 }: {
   searchParams: Promise<{ saved?: string; error?: string }>;
 }) {
-  const merchant = await requireRoles(MERCHANT_ROLES);
+  const merchant = await requireMerchantAccess();
   const supabase = await createClient();
   const { data: store, error } = await supabase
     .from("stores")
     .select("id,name,slug,description,phone,contact_person,city,district,address_line,merchant_category,status")
+    .eq("id", merchant.storeId)
     .eq("owner_id", merchant.id)
-    .eq("is_platform_store", false)
     .maybeSingle();
   if (error) console.error("Merchant store profile lookup failed:", error.code);
   const params = await searchParams;
@@ -25,7 +24,7 @@ export default async function MerchantStoreProfilePage({
     return (
       <section className="workspace-page">
         <WorkspacePageHeader eyebrow="STORE PROFILE" title="زانیاری فرۆشگا" description="تەنها خاوەنی فرۆشگاکە دەتوانێت زانیارییەکانی ببینێت و دەستکاری بکات." />
-        <EmptyState icon="!" title="فرۆشگا نەدۆزرایەوە" description="پەیوەندی بە بەڕێوەبردنەوە بکە بۆ پشکنینی دەسەڵات و تۆماری فرۆشگا." variant="warning" />
+        <EmptyState icon="!" title="زانیاری فرۆشگا بەردەست نییە" description="پشکنینی داتای فرۆشگا سەرکەوتوو نەبوو." variant="error" />
       </section>
     );
   }
@@ -39,11 +38,8 @@ export default async function MerchantStoreProfilePage({
       {params.error === "save_failed" && <div className="m03-notice m03-notice--error" role="alert">پاشەکەوتکردن سەرکەوتوو نەبوو.</div>}
       <section className="m03-panel">
         <div className="m03-panel-heading">
-          <div>
-            <span className="section-kicker">STORE SETTINGS</span>
-            <h2>{store.name}</h2>
-          </div>
-          <span className={`m03-status m03-status--${store.status}`}>{store.status === "active" ? "چالاک" : store.status}</span>
+          <div><span className="section-kicker">STORE SETTINGS</span><h2>{store.name}</h2></div>
+          <span className="m03-status m03-status--active">چالاک</span>
         </div>
         <form action={updateMerchantStoreProfile} className="m03-form">
           <div className="m03-form-grid">

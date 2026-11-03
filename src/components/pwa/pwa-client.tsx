@@ -38,13 +38,19 @@ export function PwaClient() {
     const handleOffline = () => setOffline(true);
     const handleOnline = () => setOffline(false);
 
-    setOffline(!navigator.onLine);
+    // Defer the first browser-state sync until after the effect has committed.
+    // The offline/online listeners handle all later connectivity transitions.
+    const initialConnectivitySync = window.setTimeout(() => {
+      setOffline(!navigator.onLine);
+    }, 0);
+
     window.addEventListener("beforeinstallprompt", handleInstallPrompt);
     window.addEventListener("appinstalled", handleInstalled);
     window.addEventListener("offline", handleOffline);
     window.addEventListener("online", handleOnline);
 
     return () => {
+      window.clearTimeout(initialConnectivitySync);
       window.removeEventListener("beforeinstallprompt", handleInstallPrompt);
       window.removeEventListener("appinstalled", handleInstalled);
       window.removeEventListener("offline", handleOffline);
