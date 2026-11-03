@@ -35,10 +35,14 @@
 ## Current implementation baseline
 
 - Domain: Vercel reports `daim-post.online` and `www.daim-post.online` verified on `shakh-platform`; apex redirects to `www` with status 308.
-- Auth: M01 application code includes SSR cookie sessions, email/password sign-in/sign-up, confirmation/resend, recovery/reset, reauthenticated password change and explicit session revocation. Supabase dashboard provider, URL, templates, SMTP and end-to-end verification remain release checks.
+- Auth: M01 application code includes SSR cookie sessions, email/password sign-in/sign-up, confirmation/resend, recovery/reset, reauthenticated password change and explicit session revocation. ShakhStore is connected; dashboard URL/provider/template/SMTP setup and end-to-end Auth verification remain release checks. No Auth users exist yet; first verified account must receive the Super Admin bootstrap.
 - Profile: own-profile display and update flow exists for full name, phone and preferred locale. Email and trusted role are read-only in the profile screen.
 - Business email: Resend server helpers and Sorani templates exist; they still need to be connected to committed order/delivery events.
-- Workspace UI: shared RTL shell, role-aware desktop/mobile navigation and common page states are implemented. M03 adds live merchant application, admin review queue and store profile routes.
+- Workspace UI: shared RTL shell, role-aware desktop/mobile navigation and common page states are implemented. M03 merchant intake/moderation functions are deployed to ShakhStore; signed-in admin and cross-account RLS tests remain release checks.
+- Database: 16 migrations applied to ShakhStore and matching source files stored under `supabase/migrations`; 8 roles, 31 permissions, 91 role grants, catalog, merchant onboarding, addresses/zones, multi-store orders, delivery tracking, wallets and commission rules exist.
+- Edge Functions: `manage-user-role` and `review-merchant-application` are ACTIVE with JWT verification enabled.
+- Security: Supabase Security Advisor is clean. Performance Advisor reports only unused-index INFO findings because the new project has no workload yet.
+- Financial checks: 1,000 IQD delivery fee splits to 200 IQD platform / 800 IQD captain; 1 kg merchant example calculates 350 IQD. The ledger schema is immutable and posting is service-role-only; top-up and settlement orchestration are not yet released.
 - PWA: v1 shell, manifest, install prompt and conservative offline fallback are implemented. Push notifications and offline transactions are intentionally deferred.
 
 ## Release rule
@@ -53,3 +57,14 @@ A milestone is complete only when its code is deployed, its acceptance gate has 
 - Production release remains gated on the Edge Function and application deployment reporting READY, followed by signed-in role tests and cross-account RLS checks. Until those checks pass, M03 is implemented but not fully accepted.
 
 - M03 moderation: admin/super-admin store suspension and reactivation are recorded in an append-only store moderation event table; SHAKH STORE is excluded.
+
+
+## ShakhStore primary database status (2026-11-03)
+
+- Primary project: `vtxntrcsjmnmbnfxhfgz`, region `eu-central-1`, PostgreSQL 17.
+- Applied migrations: 16; versioned SQL source is tracked under `supabase/migrations`.
+- Public application tables: all have RLS enabled. No demo customer, merchant, product, order, wallet or transaction records were inserted.
+- Seeded operational baseline: 8 roles, 31 permission keys, 91 role grants, 4 Sorani categories, one platform store, two default commission rules, one platform wallet.
+- Deployed Edge Functions: `manage-user-role` and `review-merchant-application`.
+- Auth users: 0. The first account must register and verify email before the one-time Super Admin bootstrap can run.
+- Release gates: configure Supabase Auth URL/provider/templates/SMTP; update Vercel Preview environment variables for this Supabase project; test signup/confirmation and each role; implement/test checkout and payment/ledger workflows; provision live delivery zones and run multi-account RLS tests.
