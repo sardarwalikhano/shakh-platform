@@ -2,19 +2,20 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { PwaClient } from "@/components/pwa/pwa-client";
 import "./globals.css";
+import "./shakh-store.css";
 
 export const metadata: Metadata = {
   title: {
-    default: "SHAKH | بازاڕی یەکگرتوو",
-    template: "%s | SHAKH",
+    default: "Shakh Store | بازاڕ و گەیاندن",
+    template: "%s | Shakh Store",
   },
   description:
-    "SHAKH پلاتفۆرمێکی یەکگرتووی فرۆشتن و گەیاندنە بۆ خواردنگە، مارکێت و فرۆشیارە ناوخۆییەکان.",
-  applicationName: "SHAKH",
+    "Shakh Store پلاتفۆرمێکی یەکگرتووی فرۆشتن و گەیاندنە بۆ چێشتخانە، سوپەرمارکێت، گۆشت و سپیاتی، سەوزە و میوە.",
+  applicationName: "Shakh Store",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
-    title: "SHAKH",
+    title: "Shakh Store",
     statusBarStyle: "default",
   },
   icons: {
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#14532D",
+  themeColor: "#F26B21",
   colorScheme: "light",
 };
 
