@@ -21,7 +21,9 @@ const HOME_ICONS: Record<UserRole, string> = {
 };
 
 function isActive(pathname: string, href: string) {
-  return pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
+  // Avoid marking the merchant workspace home and a nested products/store
+  // destination active at the same time.
+  return pathname === href;
 }
 
 function NavLink({ item, pathname, compact = false }: { item: Item; pathname: string; compact?: boolean }) {
