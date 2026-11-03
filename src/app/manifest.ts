@@ -3,8 +3,8 @@ import type { MetadataRoute } from "next";
 export default function manifest(): MetadataRoute.Manifest {
   return {
     id: "/",
-    name: "SHAKH | بازاڕی یەکگرتوو",
-    short_name: "SHAKH",
+    name: "Shakh Store | بازاڕ و گەیاندن",
+    short_name: "Shakh Store",
     description:
       "بازاڕی یەکگرتوو بۆ خواردنگە، مارکێت، بەرهەمی تازە و گەیاندن.",
     start_url: "/",
@@ -14,8 +14,8 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "any",
     lang: "ckb",
     dir: "rtl",
-    background_color: "#F8FAFC",
-    theme_color: "#14532D",
+    background_color: "#FFFAF6",
+    theme_color: "#F26B21",
     categories: ["shopping", "food", "lifestyle"],
     prefer_related_applications: false,
     icons: [
