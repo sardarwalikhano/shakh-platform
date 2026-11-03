@@ -14,8 +14,12 @@ This repository contains the SHAKH platform foundation and the final orange-and-
 - Role-aware workspace shell for super admin, admin, merchants, captain, and customer
 - Existing Supabase SSR cookie sessions, email/password authentication, confirmation/resend, password recovery/reset/change, and explicit session revocation
 - Existing role-protected workspace routes and merchant store/product foundations
-- Customer, merchant, captain, and super-admin dashboard UI foundations; features that need orders, wallet, ledger, or live GPS backends are visibly identified as not yet connected
-- Supabase project and Auth dashboard configuration remain pending until the two designated project references are authorized and verified
+- Supabase primary project `vtxntrcsjmnmbnfxhfgz` (region `eu-central-1`, PostgreSQL 17); 16 versioned migrations are applied and tracked under `supabase/migrations`
+- Database foundation includes 8 app roles, 31 permission keys, 91 role-permission grants, merchant onboarding/moderation, Sorani catalog categories, customer addresses, delivery zones, multi-store orders, captain assignments/GPS, prepaid wallets, immutable ledger, and versioned commission rules
+- Both `manage-user-role` and `review-merchant-application` Edge Functions are deployed with JWT verification enabled
+- Security Advisor is clean; Performance Advisor currently reports only unused-index INFO findings on this new, empty workload
+- Auth users are currently 0; first verified account must be bootstrapped as Super Admin before role-managed administration is available
+- The order, wallet, refund, and GPS database structures exist, but checkout orchestration, real payment settlement/top-up, dispatch automation, and end-to-end role/RLS tests remain release gates
 
 The current refresh is on branch `uiux/shakhstore-orange-final`. It does not merge into `main` or deploy production automatically.
 
@@ -29,7 +33,7 @@ cp .env.example .env.local
 npm run dev
 ```
 
-Set `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local` from the authorized Supabase project's Connect dialog before testing authentication. The current `.env.example` still references the previously connected `shakh_platform` project; do not replace it with another project URL until the user's designated primary and test projects are authorized and confirmed. Never put secret or service-role keys in browser-visible variables.
+`.env.example` points to the ShakhStore primary project. Set `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in `.env.local` from that project's Connect dialog. The publishable key is intentionally blank in the example; never expose `SUPABASE_SECRET_KEY` or a service-role key through `NEXT_PUBLIC_*` or source control.
 
 ## Product roles
 
@@ -58,6 +62,15 @@ Merchant accounts are limited to their own store and assigned category. Super Ad
 - COD collection and wallet checkout are payment methods, not commission revenue. Wallet top-ups are liabilities/balance funding, not platform revenue.
 - The UI does not claim the ledger, order settlement, or refund automation is complete until the corresponding backend and verification are implemented.
 
+## ShakhStore database baseline
+
+- Primary Supabase project: `vtxntrcsjmnmbnfxhfgz` (`eu-central-1`, PostgreSQL 17).
+- All exposed application tables have RLS enabled; browser writes to orders and financial records are denied. Address CRUD is owner-scoped; audit and ledger records are append-only.
+- Application roles are trusted `app_metadata.role` claims, not client-supplied `user_metadata` or PostgreSQL login roles.
+- The first Super Admin bootstrap is a one-time `service_role`-only function and requires a verified Auth user. No users are pre-seeded.
+- `wallet_balances` is derived from ledger entries; it is not an editable balance field.
+- Merchant commission defaults to 350 IQD per actual kg. Delivery fee split defaults to 20% platform / 80% captain. Rules are versioned and Super Admin-managed.
+
 ## Security and integration
 
 Supabase Auth uses cookie-based SSR sessions. Next.js 16 `src/proxy.ts` refreshes tokens using `supabase.auth.getClaims()`; protected workspace layouts independently verify the user role. Proxy redirects are not the sole authorization boundary.
@@ -67,8 +80,9 @@ Role authorization reads trusted `app_metadata.role`, never browser-editable `us
 ## Database change policy
 
 - Keep schema changes in versioned Supabase migrations.
-- Generate migration files with the Supabase CLI once access to the designated primary project is verified.
+- ShakhStore has 16 applied migration versions; source SQL is kept in `supabase/migrations` with matching version prefixes.
 - Never edit an already-applied migration; add a new migration for each later schema change.
+- Use the same ordered migration files when preparing the authorized testing project; verify target project ID before applying.
 - Enable RLS on every exposed table and explicitly grant Data API access as required.
 - No mock, demo, seed, or test data/files are added to the production app structure.
 
