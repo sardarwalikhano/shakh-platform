@@ -4,7 +4,7 @@ import { join } from "node:path";
 const directory = join(process.cwd(), "supabase", "migrations");
 const files = readdirSync(directory).filter((file) => file.endsWith(".sql")).sort();
 
-const invalid = files.filter((file) => !/^\\d{14}_[a-z0-9_]+\\.sql$/.test(file));
+const invalid = files.filter((file) => !/^\d{14}_[a-z0-9_]+\.sql$/.test(file));
 const versions = files.map((file) => file.slice(0, 14));
 const duplicates = versions.filter((version, index) => versions.indexOf(version) !== index);
 
