@@ -43,7 +43,10 @@ export function WorkspaceMobileNavigation({ role }: Props) {
     : role === "restaurant" || role === "supermarket" || role === "produce_vendor" || role === "meat_seafood_vendor"
       ? [{ href: "/workspace/merchant/store", label: "زانیاری فرۆشگا", shortLabel: "فرۆشگا", icon: "▤" }, { href: "/workspace/merchant/products", label: "بەرهەم و کۆگا", shortLabel: "بەرهەم", icon: "▦" }]
       : role === "admin" || role === "super_admin"
-        ? [{ href: "/workspace/admin/merchant-applications", label: "داواکاری فرۆشیاران", shortLabel: "داواکاری", icon: "✓" }]
+        ? [
+            { href: "/workspace/admin/merchant-applications", label: "داواکاری فرۆشیاران", shortLabel: "داواکاری", icon: "✓" },
+            { href: "/workspace/admin/catalog/products", label: "پشکنینی بەرهەمەکان", shortLabel: "بەرهەم", icon: "▦" },
+          ]
         : [];
   const account: Item[] = [
     { href: "/workspace/profile", label: "پرۆفایلی من", shortLabel: "پرۆفایل", icon: "◎" },
@@ -65,7 +68,10 @@ export function WorkspaceNavigation({ role }: Props) {
       : role === "restaurant" || role === "supermarket" || role === "produce_vendor" || role === "meat_seafood_vendor"
         ? [{ href: "/workspace/merchant/store", label: "زانیاری فرۆشگا", shortLabel: "فرۆشگا", icon: "▤" }]
         : role === "admin" || role === "super_admin"
-          ? [{ href: "/workspace/admin/merchant-applications", label: "داواکاری فرۆشیاران", shortLabel: "داواکاری", icon: "✓" }]
+          ? [
+              { href: "/workspace/admin/merchant-applications", label: "داواکاری فرۆشیاران", shortLabel: "داواکاری", icon: "✓" },
+              { href: "/workspace/admin/catalog/products", label: "پشکنینی بەرهەمەکان", shortLabel: "بەرهەم", icon: "▦" },
+            ]
           : [];
   const account: Item[] = [
     { href: "/workspace/profile", label: "پرۆفایلی من", shortLabel: "پرۆفایل", icon: "◎" },
