@@ -225,3 +225,23 @@ REVOKE ALL ON FUNCTION public.admin_set_product_status_v1(uuid, text, text, time
   FROM PUBLIC, anon, authenticated;
 GRANT EXECUTE ON FUNCTION public.admin_set_product_status_v1(uuid, text, text, timestamptz)
   TO authenticated;
+
+ 
+DO $function$
+BEGIN
+  IF NOT has_table_privilege('authenticated', 'public.product_moderation_events', 'SELECT') THEN
+    RAISE EXCEPTION 'AUDIT_SELECT_GRANT_MISSING';
+  END IF;
+  IF has_table_privilege('authenticated', 'public.product_moderation_events', 'INSERT')
+     OR has_table_privilege('authenticated', 'public.product_moderation_events', 'UPDATE')
+     OR has_table_privilege('authenticated', 'public.product_moderation_events', 'DELETE') THEN
+    RAISE EXCEPTION 'AUDIT_TABLE_WRITE_GRANT_MUST_BE_DENIED';
+  END IF;
+  IF has_function_privilege('anon', 'public.admin_set_product_status_v1(uuid,text,text,timestamptz)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'ANON_MUST_NOT_EXECUTE_MODERATION_RPC';
+  END IF;
+  IF NOT has_function_privilege('authenticated', 'public.admin_set_product_status_v1(uuid,text,text,timestamptz)', 'EXECUTE') THEN
+    RAISE EXCEPTION 'AUTHENTICATED_RPC_EXECUTE_GRANT_MISSING';
+  END IF;
+END;
+$function$;
