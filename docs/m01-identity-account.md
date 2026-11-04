@@ -8,14 +8,14 @@ The application code now includes:
 - Email confirmation callback and resend confirmation.
 - PKCE code exchange and token-hash verification.
 - Password recovery request and recovery session callback.
-- Password reset after a valid recovery session, restricted to JWT `amr` entries containing `method: "recovery"`.
+- Password reset after a valid recovery session, restricted to a verified JWT `amr` entry containing `method: "recovery"` no older than 15 minutes.
 - Authenticated password change with current-password reauthentication.
 - Current-session, other-session and global sign-out scopes.
 - Owner-scoped profile display and editing; trusted role and email are not editable in the general profile form.
 
 The app requires 12–128 Unicode characters for new passwords. Supabase Auth stores and verifies password credentials; application code does not store plaintext passwords or log them.
 
-The recovery reset page and its server action both require a verified recovery authentication method. A normal password-authenticated session is not sufficient to enter or submit the recovery reset flow.
+The recovery reset page and its server action both require a verified recovery authentication method no older than 15 minutes. A normal password-authenticated session is not sufficient to enter or submit the recovery reset flow; expired recovery sessions must request a new recovery email.
 
 ## Required Supabase dashboard configuration
 
@@ -87,7 +87,7 @@ The domain mail.daim-post.online is verified in Resend. Auth SMTP is a separate 
 5. Password recovery returns the same generic response for registered and unregistered addresses.
 6. Valid recovery token opens the password reset page; expired or invalid tokens are rejected.
 7. A normal password-authenticated session cannot open or submit the recovery password reset action.
-8. A valid recovery session is accepted only when the verified JWT `amr` claim contains `method: "recovery"`.
+8. A valid recovery session is accepted only when the verified JWT `amr` claim contains `method: "recovery"` with a timestamp no older than 15 minutes.
 9. Password reset updates the password and requests global refresh-token revocation.
 10. Authenticated password change requires the current password and revokes other sessions.
 11. Local sign-out removes only the current session; other-device and global sign-out use explicit scopes.
