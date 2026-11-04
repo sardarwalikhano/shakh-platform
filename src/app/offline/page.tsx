@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -48,7 +49,7 @@ export default function OfflinePage() {
           ئێستا ناتوانین پەیوەندی بە سێرڤەرەوە بکەین. پەیوەندی ئینتەرنێت بپشکنە
           و دووبارە هەوڵبدەرەوە.
         </p>
-        <a
+        <Link
           href="/"
           style={{
             minHeight: "46px",
@@ -66,7 +67,7 @@ export default function OfflinePage() {
           }}
         >
           دووبارە هەوڵبدەرەوە
-        </a>
+        </Link>
       </section>
     </main>
   );

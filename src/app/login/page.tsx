@@ -55,6 +55,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             </div>
             {!configured && <div className="auth-alert auth-alert--warning" role="status">پەیوەندی Supabase تەواو نەکراوە. ڕێکخستنی publishable key پشکنە.</div>}
             {params.error && ERRORS[params.error] && <div className="auth-alert auth-alert--error" role="alert">{ERRORS[params.error]}</div>}
+            {params.message === "password_updated_revoke_failed" && <div className="auth-alert auth-alert--warning" role="status">وشەی نهێنی نوێکرایەوە، بەڵام داخستنی هەموو دانیشتنەکانی تر پشتڕاست نەکرا. پاش چوونەژوورەوە، لە بەشی ئاسایشی هەژمار دانیشتنەکان پشکنە.</div>}
             {params.message && MESSAGES[params.message] && <div className="auth-alert auth-alert--success" role="status">{MESSAGES[params.message]}</div>}
 
             <form action={signIn} className="auth-form">

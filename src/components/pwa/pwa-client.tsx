@@ -1,16 +1,33 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>;
 };
 
+function subscribeToNetwork(callback: () => void) {
+  window.addEventListener("offline", callback);
+  window.addEventListener("online", callback);
+  return () => {
+    window.removeEventListener("offline", callback);
+    window.removeEventListener("online", callback);
+  };
+}
+
+function getOfflineSnapshot() {
+  return typeof navigator !== "undefined" && !navigator.onLine;
+}
+
+function getServerOfflineSnapshot() {
+  return false;
+}
+
 export function PwaClient() {
   const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
   const [dismissed, setDismissed] = useState(false);
-  const [offline, setOffline] = useState(false);
+  const offline = useSyncExternalStore(subscribeToNetwork, getOfflineSnapshot, getServerOfflineSnapshot);
 
   useEffect(() => {
     if (process.env.NODE_ENV !== "production") return;
@@ -35,20 +52,12 @@ export function PwaClient() {
       setInstallPrompt(null);
     };
 
-    const handleOffline = () => setOffline(true);
-    const handleOnline = () => setOffline(false);
-
-    setOffline(!navigator.onLine);
     window.addEventListener("beforeinstallprompt", handleInstallPrompt);
     window.addEventListener("appinstalled", handleInstalled);
-    window.addEventListener("offline", handleOffline);
-    window.addEventListener("online", handleOnline);
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handleInstallPrompt);
       window.removeEventListener("appinstalled", handleInstalled);
-      window.removeEventListener("offline", handleOffline);
-      window.removeEventListener("online", handleOnline);
     };
   }, []);
 

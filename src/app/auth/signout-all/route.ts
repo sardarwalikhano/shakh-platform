@@ -14,6 +14,10 @@ export async function POST(request: NextRequest) {
   if (!getSupabasePublicEnv()) return NextResponse.redirect(new URL("/setup-required", request.url), 303);
 
   const supabase = await createClient();
-  await supabase.auth.signOut({ scope: "global" });
+  const { error } = await supabase.auth.signOut({ scope: "global" });
+  if (error) {
+    console.error("Global sign-out failed:", error.code);
+    return NextResponse.redirect(new URL("/workspace/security?error=global_signout_failed", request.url), 303);
+  }
   return NextResponse.redirect(new URL("/login?message=signed_out_all", request.url), 303);
 }

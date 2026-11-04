@@ -53,3 +53,21 @@ A milestone is complete only when its code is deployed, its acceptance gate has 
 - Production release remains gated on the Edge Function and application deployment reporting READY, followed by signed-in role tests and cross-account RLS checks. Until those checks pass, M03 is implemented but not fully accepted.
 
 - M03 moderation: admin/super-admin store suspension and reactivation are recorded in an append-only store moderation event table; SHAKH STORE is excluded.
+
+
+## M04 implementation status
+
+- Merchant product creation is restricted to the database-granted insert columns; status and availability use database defaults so newly created products remain drafts.
+- Direct client-side publication/status updates are intentionally unavailable because the authenticated role has no UPDATE privilege on the product status column. Publication must be implemented as an audited server-side workflow before the UI exposes that control.
+- M04 must not be marked complete until product creation is verified with a merchant account, store/category isolation is tested, and the publication workflow has its own server-side authorization and fee/ledger acceptance checks.
+
+
+## M04 product publication workflow implementation status
+
+- Merchant-created products start as drafts using database defaults. Merchants do not receive direct UPDATE privileges on the `status` column.
+- Admin and Super Admin review is exposed at `/workspace/admin/catalog/products`; the page is protected by the admin route layout and server action.
+- `admin_set_product_status_v1` checks the authenticated user ID and the current `auth.users.raw_app_meta_data.role`, locks the product and store rows, and requires the exact `updated_at` version shown during review.
+- Publishing requires an active store, positive price, availability, and an active category. Only Super Admin can moderate the platform-owned SHAKH STORE. Archived products must first return to draft before republishing.
+- Every status change is written atomically to an append-only `product_moderation_events` audit table. Authenticated clients can read the log only as Admin/Super Admin and cannot insert, update, or delete audit records.
+- Rollback-only SQL probes exercised both the customer-denial path and the Super Admin publication path; temporary user-role, product and audit changes were fully rolled back.
+- M04 remains incomplete until a real merchant creates a product, a real Admin/Super Admin reviews it in a deployed preview, and the full product/storage/inventory acceptance suite passes.

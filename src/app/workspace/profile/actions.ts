@@ -23,6 +23,7 @@ export async function updateProfile(
   _previousState: ProfileActionState = INITIAL_STATE,
   formData: FormData,
 ): Promise<ProfileActionState> {
+  void _previousState;
   const user = await getAuthenticatedContext();
   if (!user || !user.role) {
     return {

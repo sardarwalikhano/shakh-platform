@@ -23,7 +23,7 @@ function slugValue(raw: string): string | null {
 }
 
 export async function submitMerchantApplication(formData: FormData) {
-  const applicant = await requireRoles(["customer"]);
+  await requireRoles(["customer"]);
   const businessName = value(formData, "business_name");
   const rawSlug = value(formData, "proposed_slug");
   const proposedSlug = slugValue(rawSlug);
