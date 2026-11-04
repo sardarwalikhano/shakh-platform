@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/server";
-import { getRoleFromClaims, ROLE_HOME } from "@/lib/auth/roles";
+import { getAuthenticatedContext } from "@/lib/auth/guards";
+import { ROLE_HOME } from "@/lib/auth/roles";
 
 const categories = [
   {
@@ -51,11 +51,11 @@ const benefits = [
   },
 ];
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
-  const supabase = await createClient();
-  const { data: auth } = await supabase.auth.getClaims();
-  const role = getRoleFromClaims(auth?.claims);
-  const workspaceHref = role ? ROLE_HOME[role] : null;
+  const auth = await getAuthenticatedContext();
+  const workspaceHref = auth?.role ? ROLE_HOME[auth.role] : null;
   return (
     <main>
       <header className="site-header">
