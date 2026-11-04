@@ -9,7 +9,15 @@ export type AuthenticatedContext = {
   role: UserRole | null;
 };
 
-export async function getAuthenticatedContext(): Promise<AuthenticatedContext | null> {
+function hasRecoveryAuthentication(claims: Record<string, unknown>): boolean {
+  const methods = claims.amr;
+  return Array.isArray(methods) && methods.some((entry) => {
+    if (!entry || typeof entry !== "object") return false;
+    return (entry as Record<string, unknown>).method === "recovery";
+  });
+}
+
+async function readAuthenticatedContext(recoveryOnly = false): Promise<AuthenticatedContext | null> {
   if (!getSupabasePublicEnv()) return null;
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
@@ -18,11 +26,23 @@ export async function getAuthenticatedContext(): Promise<AuthenticatedContext | 
   const claims = data?.claims as Record<string, unknown> | undefined;
   if (!claims || typeof claims.sub !== "string") return null;
 
+  // Password recovery must be tied to a verified recovery authentication event.
+  // A normal password-authenticated session must not be able to use the reset flow.
+  if (recoveryOnly && !hasRecoveryAuthentication(claims)) return null;
+
   return {
     id: claims.sub,
     email: typeof claims.email === "string" ? claims.email : null,
     role: getRoleFromClaims(claims),
   };
+}
+
+export async function getAuthenticatedContext(): Promise<AuthenticatedContext | null> {
+  return readAuthenticatedContext();
+}
+
+export async function getRecoveryAuthenticatedContext(): Promise<AuthenticatedContext | null> {
+  return readAuthenticatedContext(true);
 }
 
 export async function requireAuthenticatedContext() {
