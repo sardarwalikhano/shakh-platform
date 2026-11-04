@@ -9,11 +9,21 @@ export type AuthenticatedContext = {
   role: UserRole | null;
 };
 
-function hasRecoveryAuthentication(claims: Record<string, unknown>): boolean {
+const RECOVERY_AUTH_MAX_AGE_SECONDS = 15 * 60;
+
+function hasRecentRecoveryAuthentication(claims: Record<string, unknown>): boolean {
   const methods = claims.amr;
-  return Array.isArray(methods) && methods.some((entry) => {
+  if (!Array.isArray(methods)) return false;
+
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  return methods.some((entry) => {
     if (!entry || typeof entry !== "object") return false;
-    return (entry as Record<string, unknown>).method === "recovery";
+    const method = entry as Record<string, unknown>;
+    if (method.method !== "recovery" || typeof method.timestamp !== "number") return false;
+    if (!Number.isFinite(method.timestamp)) return false;
+
+    const ageSeconds = nowSeconds - method.timestamp;
+    return ageSeconds >= 0 && ageSeconds <= RECOVERY_AUTH_MAX_AGE_SECONDS;
   });
 }
 
@@ -26,9 +36,9 @@ async function readAuthenticatedContext(recoveryOnly = false): Promise<Authentic
   const claims = data?.claims as Record<string, unknown> | undefined;
   if (!claims || typeof claims.sub !== "string") return null;
 
-  // Password recovery must be tied to a verified recovery authentication event.
+  // Password recovery must be tied to a recent, verified recovery authentication event.
   // A normal password-authenticated session must not be able to use the reset flow.
-  if (recoveryOnly && !hasRecoveryAuthentication(claims)) return null;
+  if (recoveryOnly && !hasRecentRecoveryAuthentication(claims)) return null;
 
   return {
     id: claims.sub,
