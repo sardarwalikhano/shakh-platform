@@ -59,7 +59,7 @@ export async function setAdminProductStatus(formData: FormData) {
     p_product_id: productId,
     p_new_status: rawStatus,
     p_reason: reason,
-    p_expected_updated_at: new Date(expectedTimestamp).toISOString(),
+    p_expected_updated_at: rawExpectedUpdatedAt,
   });
 
   if (error) {
