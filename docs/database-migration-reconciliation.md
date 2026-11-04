@@ -21,7 +21,7 @@ The live database received migration version `20261104103925` named `grant_merch
 
 It grants `INSERT` on `public.merchant_applications` to the `authenticated` role. This is required by the existing server action in `src/app/workspace/merchant-application/actions.ts`, which inserts a signed-in user's application through the publishable-key SSR client.
 
-The existing RLS INSERT policy remains enabled and restricts submitted rows to the caller's own `auth.uid()`, with review and store-assignment fields unset. Post-change verification confirmed `authenticated` has INSERT privilege and RLS remains enabled.
+The existing RLS INSERT policy remains enabled and restricts submitted rows to the caller's own `auth.uid()`, with review and store-assignment fields unset. Post-change verification confirmed `authenticated` has INSERT privilege and RLS remains enabled. A rollback-only SQL probe executed as `authenticated` with a customer JWT claim successfully inserted a temporary row under the existing policy; the transaction was rolled back and a follow-up count confirmed zero probe rows remained.
 
 SQL source is recorded in `supabase/migrations/20261104103925_grant_merchant_application_insert_authenticated.sql`.
 
