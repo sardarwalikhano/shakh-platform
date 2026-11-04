@@ -25,6 +25,10 @@ The existing RLS INSERT policy remains enabled and restricts submitted rows to t
 
 SQL source is recorded in `supabase/migrations/20261104103925_grant_merchant_application_insert_authenticated.sql`.
 
+## Product catalogue privilege boundary
+
+The merchant product form now inserts only columns granted to `authenticated`; database defaults assign `status = 'draft'` and `is_available = true`. Direct status changes are deliberately not granted to `authenticated`, so the UI no longer offers a nonfunctional publish/archive action. A future audited server-side publication workflow must be implemented before those controls return.
+
 ## Outstanding checks
 
 - Recover and commit the full historical migration baseline.
