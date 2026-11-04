@@ -49,13 +49,23 @@ export default async function AdminProductModerationPage({
     .limit(100);
 
   const storeIds = [...new Set((products ?? []).map((product) => product.store_id))];
-  const [storesResult, categoriesResult, eventsResult] = await Promise.all([
-    storeIds.length
-      ? supabase
-          .from("stores")
-          .select("id,name,status,merchant_category,is_platform_store")
-          .in("id", storeIds)
-      : Promise.resolve({ data: [], error: null }),
+  let stores: Array<{
+    id: string;
+    name: string;
+    status: string;
+    merchant_category: string | null;
+    is_platform_store: boolean;
+  }> = [];
+
+  if (storeIds.length > 0) {
+    const { data: storeRows } = await supabase
+      .from("stores")
+      .select("id,name,status,merchant_category,is_platform_store")
+      .in("id", storeIds);
+    stores = storeRows ?? [];
+  }
+
+  const [categoriesResult, eventsResult] = await Promise.all([
     supabase
       .from("catalog_categories")
       .select("id,name_ckb")
@@ -67,7 +77,7 @@ export default async function AdminProductModerationPage({
       .limit(12),
   ]);
 
-  const storesById = new Map((storesResult.data ?? []).map((store) => [store.id, store]));
+  const storesById = new Map(stores.map((store) => [store.id, store]));
   const categoriesById = new Map((categoriesResult.data ?? []).map((category) => [category.id, category.name_ckb]));
   const productsById = new Map((products ?? []).map((product) => [product.id, product.name]));
   const params = await searchParams;
