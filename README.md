@@ -12,7 +12,7 @@ This repository starts clean and contains only the SHAKH platform foundation. It
 - SHAKH visual palette: forest green, emerald, amber, white, slate, and red
 - Supabase SSR cookie sessions, email/password sign-in/sign-up, confirmation/resend, password recovery/reset/change and explicit session revocation
 - Role-protected workspace routes for all platform roles
-- Database and Auth dashboard configuration remain pending until access to the designated Supabase project is authorized
+- The designated Supabase project (`vtxntrcsjmnmbnfxhfgz`, `eu-central-1`) is active; 25 database migrations are recorded and RLS is enabled across all 23 public tables. Auth Dashboard settings (email confirmation, redirect URLs, templates, SMTP, and leaked-password protection) remain release gates
 
 ## Local development
 
@@ -86,6 +86,6 @@ See [docs/pwa.md](docs/pwa.md) for the implementation and device verification ch
 
 ## Deployment
 
-The Vercel project is linked to this repository and configured for Next.js with Node.js 22.x. Check the current build status in Vercel before treating the site as live.
+A Vercel project connected to `sardarwalikhano/shakh-platform` has not yet been verified. The currently accessible Vercel projects are connected to other repositories, so do not treat this repository as deployed. Link this repository to its intended Vercel project, configure its environment variables from the designated Supabase project, and verify a READY preview before production release.
 
 See [docs/architecture.md](docs/architecture.md) and [docs/auth-and-access.md](docs/auth-and-access.md).
