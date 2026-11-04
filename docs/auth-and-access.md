@@ -2,9 +2,9 @@
 
 ## Supabase project
 
-- Project reference: `vjfzdlmqrmzaufnqsdre`
-- Project URL: `https://vjfzdlmqrmzaufnqsdre.supabase.co`
-- Region: `eu-west-3`
+- Project reference: `vtxntrcsjmnmbnfxhfgz`
+- Project URL: `https://vtxntrcsjmnmbnfxhfgz.supabase.co`
+- Region: `eu-central-1`
 - Browser API key: publishable key (`sb_publishable_...`), configured as a Vercel environment variable.
 - Never use a secret/service-role key in browser code or a `NEXT_PUBLIC_*` variable.
 
