@@ -15,7 +15,7 @@ export default async function MerchantProductsPage({searchParams}:Props){
   supabase.from("catalog_categories").select("id,name_ckb").eq("is_active",true).order("sort_order")
  ]);
  return <section className="workspace-page">
-  <WorkspacePageHeader eyebrow="M04 · PRODUCT CATALOG" title="بەرهەم و کۆگا" description="بەرهەم زیاد بکە، نرخ و بڕی کۆگا ڕێکبخە، و پاش پشکنین بڵاوی بکەرەوە."/>
+  <WorkspacePageHeader eyebrow="M04 · PRODUCT CATALOG" title="بەرهەم و کۆگا" description="بەرهەم زیاد بکە، نرخ و بڕی کۆگا ڕێکبخە. بەرهەمە نوێیەکان سەرەتا ڕەشنووسن؛ بڵاوکردنەوە لە ڕێکاری پارێزراوی بەڕێوەبردنەوە دەکرێت."/>
   {params.saved==="1"&&<div className="m03-notice m03-notice--success" role="status">گۆڕانکارییەکان پاشەکەوت کران.</div>}
   {params.error&&<div className="m03-notice m03-notice--error" role="alert">{params.error==="invalid"?"زانیارییەکان بە دروستی پڕ بکەرەوە.":params.error==="sku_taken"?"SKU ـی ئەم بەرهەمە پێشتر بەکارهاتووە.":params.error==="store_unavailable"?"فرۆشگا چالاک نییە؛ پەیوەندی بە بەڕێوەبردنەوە بکە.":"پاشەکەوتکردن سەرکەوتوو نەبوو."}</div>}
   <section className="m03-panel"><div className="m03-panel-heading"><div><span className="section-kicker">ADD PRODUCT</span><h2>زیادکردنی بەرهەمی نوێ</h2></div></div>
@@ -27,7 +27,7 @@ export default async function MerchantProductsPage({searchParams}:Props){
    <label className="m03-field"><span>SKU (ئارەزوومەندانە)</span><input name="sku" maxLength={120} dir="ltr"/></label>
    <label className="m03-field"><span>پۆل</span><select name="category_id" defaultValue=""><option value="">پۆل هەڵبژێرە</option>{(categories??[]).map(c=><option key={c.id} value={c.id}>{c.name_ckb}</option>)}</select></label>
    <label className="m03-field m03-field--full"><span>وەسف</span><textarea name="description" rows={3} maxLength={2000}/></label>
-  </div><div className="m03-form-footer"><p>بەرهەمە نوێیەکان سەرەتا وەک ڕەشنووس پاشەکەوت دەکرێن؛ بۆ بینینی گشتی پێویستە بڵاویان بکەیتەوە.</p><button className="button button--primary" type="submit">پاشەکەوتکردنی ڕەشنووس</button></div></form>}</section>
+  </div><div className="m03-form-footer"><p>بەرهەمە نوێیەکان وەک ڕەشنووس پاشەکەوت دەکرێن؛ بڵاوکردنەوە دوای تەواوبوونی ڕێکاری پشتڕاستکراوی بازرگانی چالاک دەبێت.</p><button className="button button--primary" type="submit">پاشەکەوتکردنی ڕەشنووس</button></div></form>}</section>
   <section className="m03-panel"><div className="m03-panel-heading"><div><span className="section-kicker">INVENTORY</span><h2>لیستی بەرهەمەکان ({products?.length??0})</h2><p>بەرهەمە نوێیەکان وەک ڕەشنووس پاشەکەوت دەبن؛ بڵاوکردنەوە تەنها دوای چالاکبوونی ڕێکاری پشتڕاستکراوی بەڕێوەبردن دەکرێت.</p></div></div>
   {!products?.length?<EmptyState icon="▤" title="هێشتا بەرهەمێک نییە" description="لە فۆڕمی سەرەوە یەکەم بەرهەم زیاد بکە."/>:<div className="m04-product-list">{products.map(p=><article className="m04-product-row" key={p.id}><div className="m04-product-info"><strong>{p.name}</strong><span dir="ltr">{Number(p.price_iqd).toLocaleString("en-US")} IQD</span><small>{p.stock_quantity===null?"کۆگا دیاری نەکراوە":"کۆگا: "+p.stock_quantity+" "+p.unit} · {statusLabel[p.status]??p.status}</small></div><span className={`m03-status m03-status--${p.status}`}>{statusLabel[p.status]??p.status}</span></article>)}</div>}</section>
   <p className="m03-back-link"><Link href="/workspace/merchant">گەڕانەوە بۆ پێشخان</Link></p>
