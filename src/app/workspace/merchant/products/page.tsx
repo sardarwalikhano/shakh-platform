@@ -17,15 +17,15 @@ export default async function MerchantProductsPage({searchParams}:Props){
  return <section className="workspace-page">
   <WorkspacePageHeader eyebrow="M04 · PRODUCT CATALOG" title="بەرهەم و کۆگا" description="بەرهەم زیاد بکە، نرخ و بڕی کۆگا ڕێکبخە. بەرهەمە نوێیەکان سەرەتا ڕەشنووسن؛ بڵاوکردنەوە لە ڕێکاری پارێزراوی بەڕێوەبردنەوە دەکرێت."/>
   {params.saved==="1"&&<div className="m03-notice m03-notice--success" role="status">گۆڕانکارییەکان پاشەکەوت کران.</div>}
-  {params.error&&<div className="m03-notice m03-notice--error" role="alert">{params.error==="invalid"?"زانیارییەکان بە دروستی پڕ بکەرەوە.":params.error==="sku_taken"?"SKU ـی ئەم بەرهەمە پێشتر بەکارهاتووە.":params.error==="store_unavailable"?"فرۆشگا چالاک نییە؛ پەیوەندی بە بەڕێوەبردنەوە بکە.":"پاشەکەوتکردن سەرکەوتوو نەبوو."}</div>}
+  {params.error&&<div className="m03-notice m03-notice--error" role="alert">{params.error==="invalid"?"زانیارییەکان بە دروستی پڕ بکەرەوە.":params.error==="sku_taken"?"SKU ـی ئەم بەرهەمە پێشتر بەکارهاتووە.":params.error==="store_unavailable"?"فرۆشگا چالاک نییە؛ پەیوەندی بە بەڕێوەبردنەوە بکە.":params.error==="category_invalid"?"پۆلێکی چالاک هەڵبژێرە.":"پاشەکەوتکردن سەرکەوتوو نەبوو."}</div>}
   <section className="m03-panel"><div className="m03-panel-heading"><div><span className="section-kicker">ADD PRODUCT</span><h2>زیادکردنی بەرهەمی نوێ</h2></div></div>
   {store.status!=="active"?<p>فرۆشگا چالاک نییە؛ ناتوانیت بەرهەم زیاد بکەیت.</p>:<form action={createMerchantProduct} className="m03-form"><div className="m03-form-grid">
    <label className="m03-field"><span>ناوی بەرهەم *</span><input name="name" required minLength={2} maxLength={180}/></label>
-   <label className="m03-field"><span>نرخ بە دیناری عێراقی *</span><input name="price_iqd" type="number" min="0" step="1" required inputMode="numeric"/></label>
+   <label className="m03-field"><span>نرخ بە دیناری عێراقی *</span><input name="price_iqd" type="number" min="1" step="1" required inputMode="numeric"/></label>
    <label className="m03-field"><span>بڕی کۆگا</span><input name="stock_quantity" type="number" min="0" step="1" inputMode="numeric" placeholder="بەتاڵ = بڕی دیارینەکراو"/></label>
    <label className="m03-field"><span>یەکە</span><input name="unit" defaultValue="piece" maxLength={32}/></label>
    <label className="m03-field"><span>SKU (ئارەزوومەندانە)</span><input name="sku" maxLength={120} dir="ltr"/></label>
-   <label className="m03-field"><span>پۆل</span><select name="category_id" defaultValue=""><option value="">پۆل هەڵبژێرە</option>{(categories??[]).map(c=><option key={c.id} value={c.id}>{c.name_ckb}</option>)}</select></label>
+   <label className="m03-field"><span>پۆل</span><select name="category_id" required defaultValue=""><option value="">پۆل هەڵبژێرە</option>{(categories??[]).map(c=><option key={c.id} value={c.id}>{c.name_ckb}</option>)}</select></label>
    <label className="m03-field m03-field--full"><span>وەسف</span><textarea name="description" rows={3} maxLength={2000}/></label>
   </div><div className="m03-form-footer"><p>بەرهەمە نوێیەکان وەک ڕەشنووس پاشەکەوت دەکرێن؛ بڵاوکردنەوە دوای تەواوبوونی ڕێکاری پشتڕاستکراوی بازرگانی چالاک دەبێت.</p><button className="button button--primary" type="submit">پاشەکەوتکردنی ڕەشنووس</button></div></form>}</section>
   <section className="m03-panel"><div className="m03-panel-heading"><div><span className="section-kicker">INVENTORY</span><h2>لیستی بەرهەمەکان ({products?.length??0})</h2><p>بەرهەمە نوێیەکان وەک ڕەشنووس پاشەکەوت دەبن؛ بڵاوکردنەوە تەنها دوای چالاکبوونی ڕێکاری پشتڕاستکراوی بەڕێوەبردن دەکرێت.</p></div></div>
