@@ -36,3 +36,15 @@ The merchant product form now inserts only columns granted to `authenticated`; d
 - Verify admin review, role assignment and store creation end-to-end.
 - Review the API exposed-schema configuration in Supabase Dashboard; the database query interface does not expose this project setting.
 - Enable leaked-password protection in Supabase Auth and re-run Security Advisor.
+
+## Runtime log review (2026-11-04)
+
+The connected project's recent logs were reviewed by service and status:
+
+- Four Auth log events were recorded as HTTP 400 `invalid_credentials` for password grant requests. These are failed credential attempts; no account identifiers are included in this report.
+- No PostgREST 4xx events were returned by the recent-log query.
+- No Edge/API gateway 4xx/5xx events were returned by the recent-log query.
+- PostgreSQL log history contains several undefined-relation/undefined-column events. Inspection shows the `captain_user_id` column error came from an earlier M06 schema attempt; the current `public.delivery_assignments.captain_user_id` column exists and the M06–M16 migration versions are recorded. Other undefined-relation events came from internal Realtime/migration-history instrumentation lookups and a diagnostic query, not from a recent PostgREST application request.
+
+This is a recent-log snapshot, not a guarantee that no future runtime errors will occur. Continue monitoring after a preview deployment and real authenticated workflows.
+
