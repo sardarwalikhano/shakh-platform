@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getAuthenticatedContext } from "@/lib/auth/guards";
+import { getRecoveryAuthenticatedContext } from "@/lib/auth/guards";
 
 type PageProps = { searchParams: Promise<{ error?: string }> };
 
 async function updatePasswordFromRecovery(formData: FormData) {
   "use server";
-  const context = await getAuthenticatedContext();
+  const context = await getRecoveryAuthenticatedContext();
   if (!context) redirect("/forgot-password?error=invalid_link");
 
   const rawPassword = formData.get("password");
@@ -34,7 +34,7 @@ async function updatePasswordFromRecovery(formData: FormData) {
 }
 
 export default async function ResetPasswordPage({ searchParams }: PageProps) {
-  const user = await getAuthenticatedContext();
+  const user = await getRecoveryAuthenticatedContext();
   if (!user) redirect("/forgot-password?error=invalid_link");
   const params = await searchParams;
 
