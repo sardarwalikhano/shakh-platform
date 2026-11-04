@@ -8,12 +8,14 @@ The application code now includes:
 - Email confirmation callback and resend confirmation.
 - PKCE code exchange and token-hash verification.
 - Password recovery request and recovery session callback.
-- Password reset after a valid recovery session.
+- Password reset after a valid recovery session, restricted to JWT `amr` entries containing `method: "recovery"`.
 - Authenticated password change with current-password reauthentication.
 - Current-session, other-session and global sign-out scopes.
 - Owner-scoped profile display and editing; trusted role and email are not editable in the general profile form.
 
 The app requires 12–128 Unicode characters for new passwords. Supabase Auth stores and verifies password credentials; application code does not store plaintext passwords or log them.
+
+The recovery reset page and its server action both require a verified recovery authentication method. A normal password-authenticated session is not sufficient to enter or submit the recovery reset flow.
 
 ## Required Supabase dashboard configuration
 
@@ -84,11 +86,13 @@ The domain mail.daim-post.online is verified in Resend. Auth SMTP is a separate 
 4. Resend confirmation works without exposing whether an address is registered.
 5. Password recovery returns the same generic response for registered and unregistered addresses.
 6. Valid recovery token opens the password reset page; expired or invalid tokens are rejected.
-7. Password reset updates the password and requests global refresh-token revocation.
-8. Authenticated password change requires the current password and revokes other sessions.
-9. Local sign-out removes only the current session; other-device and global sign-out use explicit scopes.
-10. Trusted roles continue to be read from app_metadata.role only.
-11. Test the flow on production and preview separately with a non-privileged account.
+7. A normal password-authenticated session cannot open or submit the recovery password reset action.
+8. A valid recovery session is accepted only when the verified JWT `amr` claim contains `method: "recovery"`.
+9. Password reset updates the password and requests global refresh-token revocation.
+10. Authenticated password change requires the current password and revokes other sessions.
+11. Local sign-out removes only the current session; other-device and global sign-out use explicit scopes.
+12. Trusted roles continue to be read from app_metadata.role only.
+13. Test the flow on production and preview separately with a non-privileged account.
 
 ## Current state
 
