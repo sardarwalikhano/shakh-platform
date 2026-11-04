@@ -91,8 +91,10 @@ The domain mail.daim-post.online is verified in Resend. Auth SMTP is a separate 
 9. Password reset updates the password and requests global refresh-token revocation.
 10. Authenticated password change requires the current password and revokes other sessions.
 11. Local sign-out removes only the current session; other-device and global sign-out use explicit scopes.
-12. Trusted roles continue to be read from app_metadata.role only.
-13. Test the flow on production and preview separately with a non-privileged account.
+12. Local and global sign-out failures are surfaced as errors rather than success messages.
+13. If post-recovery global session revocation fails, the app reports the partial outcome instead of claiming all sessions were revoked.
+14. Trusted roles continue to be read from app_metadata.role only.
+15. Test the flow on production and preview separately with a non-privileged account.
 
 ## Current state
 
