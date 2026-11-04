@@ -14,6 +14,10 @@ export async function POST(request: NextRequest) {
   if (!getSupabasePublicEnv()) return NextResponse.redirect(new URL("/setup-required", request.url), 303);
 
   const supabase = await createClient();
-  await supabase.auth.signOut({ scope: "local" });
+  const { error } = await supabase.auth.signOut({ scope: "local" });
+  if (error) {
+    console.error("Local sign-out failed:", error.code);
+    return NextResponse.redirect(new URL("/workspace/security?error=local_signout_failed", request.url), 303);
+  }
   return NextResponse.redirect(new URL("/login?message=signed_out", request.url), 303);
 }
