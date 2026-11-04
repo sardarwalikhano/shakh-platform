@@ -49,6 +49,7 @@ The live database received migration version `20261104105234` named `admin_produ
 
 - The audit table has RLS enabled; authenticated users have SELECT only, no INSERT/UPDATE/DELETE, and anonymous users have no SELECT.
 - The public RPC is SECURITY INVOKER, the implementation is in the private schema as SECURITY DEFINER with an empty search_path, and only authenticated users may execute the wrapper/private function. Anonymous execution is revoked.
+- After this migration, the public schema contains 24 tables and all 24 have RLS enabled.
 - A rollback-only customer probe was denied by the database role check and returned no audit rows.
 - A rollback-only positive probe temporarily assigned Super Admin metadata to an existing customer inside the transaction, created a temporary product, published it through the RPC, and confirmed one audit event. The transaction was rolled back; a follow-up query confirmed zero temporary products, zero temporary audit events, and the account role restored to customer.
 - Post-migration verification confirms the private SECURITY DEFINER function has `search_path=""`, authenticated EXECUTE is enabled, and anon EXECUTE is disabled.
