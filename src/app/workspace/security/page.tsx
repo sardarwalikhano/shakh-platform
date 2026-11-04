@@ -68,6 +68,8 @@ export default async function AccountSecurityPage({ searchParams }: { searchPara
     wrong_current_password: "وشەی نهێنیی ئێستا دروست نییە.",
     update_failed: "گۆڕینی وشەی نهێنی سەرکەوتوو نەبوو. تکایە دواتر هەوڵبدەرەوە.",
     sessions_revoke_failed: "دانیشتنەکانی تر نەخرانە دەرەوە. دووبارە هەوڵبدەرەوە.",
+    local_signout_failed: "چوونەدەرەوە لەم ئامێرە سەرکەوتوو نەبوو. تکایە دووبارە هەوڵبدەرەوە.",
+    global_signout_failed: "چوونەدەرەوە لە هەموو ئامێرەکان پشتڕاست نەکرا. تکایە دووبارە هەوڵبدەرەوە.",
   };
   const messages: Record<string, string> = {
     password_updated: "وشەی نهێنی نوێکرایەوە. دانیشتنەکانی تر داخراون بەڵام دەرکردنیان پشتڕاست نەکرا.",
