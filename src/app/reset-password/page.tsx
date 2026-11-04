@@ -29,7 +29,10 @@ async function updatePasswordFromRecovery(formData: FormData) {
     redirect("/reset-password?error=update_failed");
   }
   const { error: revokeError } = await supabase.auth.signOut({ scope: "global" });
-  if (revokeError) console.error("Post-recovery session revocation failed:", revokeError.code);
+  if (revokeError) {
+    console.error("Post-recovery session revocation failed:", revokeError.code);
+    redirect("/login?message=password_updated_revoke_failed");
+  }
   redirect("/login?message=password_updated");
 }
 
