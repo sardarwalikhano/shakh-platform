@@ -14,17 +14,7 @@ export async function createMerchantProduct(data: FormData) {
  const supabase=await createClient();
  const {data:store,error:storeError}=await supabase.from("stores").select("id,status").eq("owner_id",user.id).eq("is_platform_store",false).maybeSingle();
  if(storeError||!store||store.status!=="active") redirect("/workspace/merchant/products?error=store_unavailable");
- const {error}=await supabase.from("products").insert({store_id:store.id,category_id:categoryId,name,description:description||null,sku,price_iqd:price,stock_quantity:stock,unit,status:"draft",is_available:true});
+ const {error}=await supabase.from("products").insert({store_id:store.id,category_id:categoryId,name,description:description||null,sku,price_iqd:price,stock_quantity:stock,unit});
  if(error){console.error("Merchant product insert failed:",error.code);redirect(error.code==="23505"?"/workspace/merchant/products?error=sku_taken":"/workspace/merchant/products?error=save_failed");}
  revalidatePath("/workspace/merchant/products"); redirect("/workspace/merchant/products?saved=1");
-}
-export async function setMerchantProductStatus(data: FormData) {
- const user=await requireRoles(MERCHANT_ROLES), productId=field(data,"product_id"), nextStatus=field(data,"next_status");
- if(!/^[0-9a-f-]{36}$/i.test(productId)||!["draft","published","archived"].includes(nextStatus)) redirect("/workspace/merchant/products?error=invalid");
- const supabase=await createClient();
- const {data:store}=await supabase.from("stores").select("id,status").eq("owner_id",user.id).eq("is_platform_store",false).maybeSingle();
- if(!store||store.status!=="active") redirect("/workspace/merchant/products?error=store_unavailable");
- const {error}=await supabase.from("products").update({status:nextStatus}).eq("id",productId).eq("store_id",store.id).select("id").maybeSingle();
- if(error){console.error("Merchant product status update failed:",error.code);redirect("/workspace/merchant/products?error=save_failed");}
- revalidatePath("/workspace/merchant/products");redirect("/workspace/merchant/products?saved=1");
 }
