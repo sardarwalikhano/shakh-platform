@@ -29,6 +29,20 @@ SQL source is recorded in `supabase/migrations/20261104103925_grant_merchant_app
 
 The merchant product form now inserts only columns granted to `authenticated`; database defaults assign `status = 'draft'` and `is_available = true`. Direct status changes are deliberately not granted to `authenticated`, so the UI no longer offers a nonfunctional publish/archive action. A future audited server-side publication workflow must be implemented before those controls return.
 
+
+
+## M04 product publication workflow
+
+The live project received migration version `20261104105234` named `admin_product_publication_workflow`.
+
+- `public.product_moderation_events` is an RLS-enabled, append-only audit table. Authenticated administrators can read it; clients have no INSERT, UPDATE or DELETE privileges.
+- `public.admin_set_product_status_v1` is an invoker RPC wrapper over a private SECURITY DEFINER function. The private function checks `auth.uid()` and the current `auth.users.raw_app_meta_data.role`, not user-editable metadata or a potentially stale role claim.
+- The RPC locks the product and store rows, requires the product version shown in the admin review screen, checks store/category/price/availability before publication, blocks admins from publishing the platform-owned store, and writes an audit event in the same transaction.
+- Archived products must return to draft before they can be published again.
+- A rollback-only negative authorization probe as a customer account confirmed that a normal customer cannot execute the moderation RPC and sees no audit events.
+
+SQL source is recorded in `supabase/migrations/20261104105234_admin_product_publication_workflow.sql`.
+
 ## Outstanding checks
 
 - Recover and commit the full historical migration baseline.
