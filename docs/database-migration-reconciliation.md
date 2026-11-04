@@ -43,6 +43,16 @@ The live project received migration version `20261104105234` named `admin_produc
 
 SQL source is recorded in `supabase/migrations/20261104105234_admin_product_publication_workflow.sql`.
 
+## M04 publication workflow verification
+
+The live database received migration version `20261104105234` named `admin_product_publication_workflow`.
+
+- The audit table has RLS enabled; authenticated users have SELECT only, no INSERT/UPDATE/DELETE, and anonymous users have no SELECT.
+- The public RPC is SECURITY INVOKER, the implementation is in the private schema as SECURITY DEFINER with an empty search_path, and only authenticated users may execute the wrapper/private function. Anonymous execution is revoked.
+- A rollback-only customer probe was denied by the database role check and returned no audit rows.
+- A rollback-only positive probe temporarily assigned Super Admin metadata to an existing customer inside the transaction, created a temporary product, published it through the RPC, and confirmed one audit event. The transaction was rolled back; a follow-up query confirmed zero temporary products, zero temporary audit events, and the account role restored to customer.
+- Post-migration verification confirms the private SECURITY DEFINER function has `search_path=""`, authenticated EXECUTE is enabled, and anon EXECUTE is disabled.
+
 ## Outstanding checks
 
 - Recover and commit the full historical migration baseline.
@@ -50,6 +60,7 @@ SQL source is recorded in `supabase/migrations/20261104105234_admin_product_publ
 - Verify admin review, role assignment and store creation end-to-end.
 - Review the API exposed-schema configuration in Supabase Dashboard; the database query interface does not expose this project setting.
 - Enable leaked-password protection in Supabase Auth and re-run Security Advisor.
+- Run lint, typecheck and build; then exercise the publication UI with a real provisioned Admin/Super Admin account and active merchant product on a deployed preview.
 
 ## Runtime log review (2026-11-04)
 
